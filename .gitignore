@@ -1,7 +1,9 @@
 .agents/
 gizi_kalkulator
 kalkulator_gizi
+nutriguard
 *.exe
 *.o
 riwayat_pemeriksaan.csv
+
 
