@@ -266,66 +266,116 @@ int main() {
         clearInput();
 
         if (menuPilihan == 1) {
-            clearScreen();
-            tampilkanHeader();
-            
             ChildProfile child;
-            std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl;
+            std::string errMsg = "";
 
             // 1. Input Nama
             while (true) {
+                clearScreen();
+                tampilkanHeader();
+                std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
+                if (!errMsg.empty()) {
+                    std::cout << RED << BOLD << "[!] Error: " << errMsg << RESET << std::endl << std::endl;
+                }
+                
                 std::cout << "Masukkan Nama Balita: ";
                 std::getline(std::cin >> std::ws, child.nama);
                 if (!child.nama.empty()) {
+                    errMsg = "";
                     break;
                 }
-                std::cout << RED << "Nama tidak boleh kosong!" << RESET << std::endl;
+                errMsg = "Nama tidak boleh kosong!";
             }
 
             // 2. Input Jenis Kelamin
             while (true) {
+                clearScreen();
+                tampilkanHeader();
+                std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
+                std::cout << "  - Nama Balita    : " << child.nama << std::endl;
+                if (!errMsg.empty()) {
+                    std::cout << RED << BOLD << "\n[!] Error: " << errMsg << RESET << std::endl;
+                }
+                std::cout << std::endl;
+
                 std::cout << "Masukkan Jenis Kelamin (L = Laki-laki, P = Perempuan): ";
                 char jk;
                 std::cin >> jk;
                 jk = std::toupper(static_cast<unsigned char>(jk));
                 if (jk == 'L' || jk == 'P') {
                     child.jenis_kelamin = jk;
+                    errMsg = "";
                     break;
                 }
-                std::cout << RED << "Input tidak valid! Masukkan 'L' atau 'P'." << RESET << std::endl;
+                errMsg = "Input tidak valid! Harap masukkan 'L' atau 'P'.";
                 clearInput();
             }
 
             // 3. Input Umur
             while (true) {
+                clearScreen();
+                tampilkanHeader();
+                std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
+                std::cout << "  - Nama Balita    : " << child.nama << std::endl;
+                std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
+                if (!errMsg.empty()) {
+                    std::cout << RED << BOLD << "\n[!] Error: " << errMsg << RESET << std::endl;
+                }
+                std::cout << std::endl;
+
                 std::cout << "Masukkan Umur Anak (0 - 60 Bulan): ";
                 int umur;
                 if (std::cin >> umur) {
                     if (umur >= 0 && umur <= 60) {
                         child.umur_bulan = umur;
+                        errMsg = "";
                         break;
                     }
                 }
-                std::cout << RED << "Umur harus berupa angka antara 0 hingga 60 bulan!" << RESET << std::endl;
+                errMsg = "Umur harus berupa angka antara 0 hingga 60 bulan!";
                 clearInput();
             }
 
             // 4. Input Berat Badan
             while (true) {
+                clearScreen();
+                tampilkanHeader();
+                std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
+                std::cout << "  - Nama Balita    : " << child.nama << std::endl;
+                std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
+                std::cout << "  - Umur / Usia    : " << child.umur_bulan << " Bulan" << std::endl;
+                if (!errMsg.empty()) {
+                    std::cout << RED << BOLD << "\n[!] Error: " << errMsg << RESET << std::endl;
+                }
+                std::cout << std::endl;
+
                 std::cout << "Masukkan Berat Badan (kg) [contoh: 8.5]: ";
                 double berat;
                 if (std::cin >> berat) {
                     if (berat > 0.0 && berat < 100.0) {
                         child.berat_kg = berat;
+                        errMsg = "";
                         break;
                     }
                 }
-                std::cout << RED << "Berat badan harus berupa angka positif yang valid!" << RESET << std::endl;
+                errMsg = "Berat badan harus berupa angka positif yang valid (di bawah 100 kg)!";
                 clearInput();
             }
 
             // 5. Input Tinggi/Panjang
             while (true) {
+                clearScreen();
+                tampilkanHeader();
+                std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
+                std::cout << "  - Nama Balita    : " << child.nama << std::endl;
+                std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
+                std::cout << "  - Umur / Usia    : " << child.umur_bulan << " Bulan" << std::endl;
+                std::cout << "  - Berat Badan    : " << std::fixed << std::setprecision(1) << child.berat_kg << " kg" << std::endl;
+                if (!errMsg.empty()) {
+                    std::cout << RED << BOLD << "\n[!] Error: " << errMsg << RESET << std::endl;
+                }
+                std::cout << std::endl;
+
                 std::cout << "Masukkan ";
                 if (child.umur_bulan <= 24) {
                     std::cout << "Panjang Badan (cm) [0-24 bulan diukur telentang]: ";
@@ -337,10 +387,11 @@ int main() {
                 if (std::cin >> tinggi) {
                     if (tinggi > 0.0 && tinggi < 200.0) {
                         child.tinggi_cm = tinggi;
+                        errMsg = "";
                         break;
                     }
                 }
-                std::cout << RED << "Tinggi/panjang badan harus berupa angka positif yang valid!" << RESET << std::endl;
+                errMsg = "Tinggi/panjang badan harus berupa angka positif yang valid (di bawah 200 cm)!";
                 clearInput();
             }
             clearInput();
