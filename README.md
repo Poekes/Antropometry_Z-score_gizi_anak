@@ -2,7 +2,8 @@
 
 Aplikasi berbasis *console* (CLI) interaktif yang dirancang khusus untuk mempermudah kader Posyandu, bidan, maupun tenaga kesehatan dalam mengukur dan mengklasifikasikan status gizi balita secara cepat dan akurat.
 
-Sistem ini melakukan perhitungan berdasarkan **Standar Antropometri Anak Kemenkes RI / WHO 2020**.
+Sistem ini melakukan perhitungan berdasarkan **[Standar Antropometri Anak Kemenkes RI / WHO 2020](https://fs.stunting.go.id/index.php/s/bfZAQbcqDZo4ySo?_gl=1*1p290nc*_ga*OTgwMzIyNjY3LjE3NzkxMDczMzM.*_ga_TV21Y9HW17*czE3NzkxMTIwNzgkbzIkZzAkdDE3NzkxMTIwNzgkajYwJGwwJGgw#pdfviewer)**.
+
 
 ---
 
