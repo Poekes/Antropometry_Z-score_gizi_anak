@@ -16,6 +16,12 @@ public:
     // Mendapatkan teks penjelasan konsep sederhana untuk kategori status gizi
     static std::string getStatusExplanation(StatusGizi status);
 
+    // Memeriksa apakah status gizi masuk kategori kritis/gawat yang butuh rujukan
+    static bool isCritical(StatusGizi status);
+
+    // Mendapatkan rencana tindakan rujukan medis jika terdeteksi gawat
+    static std::string getReferralAction(const ZScoreResult& bbu, const ZScoreResult& pbtbu, const ZScoreResult& bbh);
+
 private:
     // Menghitung Z-score tunggal berdasarkan rumus standar WHO/Kemenkes
     static double computeSingleZScore(double realVal, const ZScoreRecord& rec);
