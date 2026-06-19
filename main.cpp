@@ -96,7 +96,7 @@ void simpanKeRiwayat(const ChildProfile& child, const ZScoreResult& bbu, const Z
         outFile << "Tanggal/Waktu,Nama,Jenis Kelamin,Usia (Bulan),Berat (kg),Tinggi (cm),"
                 << "Z-Score BB/U,Status BB/U,"
                 << "Z-Score PB_TB/U,Status PB_TB/U,"
-                << "Z-Score BB/PB_TB,Status BB/PB_TB\n";
+                << "Z-Score BB/PB_TB,Status BB/PB_TB,Rujukan\n";
     }
     
     // Mengambil waktu lokal sistem saat ini
@@ -109,6 +109,11 @@ void simpanKeRiwayat(const ChildProfile& child, const ZScoreResult& bbu, const Z
     std::string cleanName = child.nama;
     std::replace(cleanName.begin(), cleanName.end(), ',', ' ');
     
+    // Tentukan status rujukan kritis
+    bool rujukan = ZScoreCalculator::isCritical(bbu.status) || 
+                    ZScoreCalculator::isCritical(pbtbu.status) || 
+                    ZScoreCalculator::isCritical(bbh.status);
+    
     outFile << timeBuffer << ","
             << cleanName << ","
             << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << ","
@@ -119,10 +124,12 @@ void simpanKeRiwayat(const ChildProfile& child, const ZScoreResult& bbu, const Z
             << std::fixed << std::setprecision(2) << pbtbu.z_score << "," << pbtbu.nama_status << ",";
             
     if (bbh.status != StatusGizi::TIDAK_TERDEFINISI) {
-        outFile << std::fixed << std::setprecision(2) << bbh.z_score << "," << bbh.nama_status << "\n";
+        outFile << std::fixed << std::setprecision(2) << bbh.z_score << "," << bbh.nama_status << ",";
     } else {
-        outFile << "N/A," << bbh.nama_status << "\n";
+        outFile << "N/A," << bbh.nama_status << ",";
     }
+    
+    outFile << (rujukan ? "RUJUK" : "TIDAK") << "\n";
     
     outFile.close();
 }
@@ -168,9 +175,9 @@ void tampilkanRiwayat() {
     }
     
     std::cout << BOLD << CYAN;
-    std::cout << "====================================================================================================================" << std::endl;
-    std::cout << "                                           RIWAYAT PEMERIKSAAN GIZI BALITA                                          " << std::endl;
-    std::cout << "====================================================================================================================" << RESET << std::endl;
+    std::cout << "=============================================================================================================================" << std::endl;
+    std::cout << "                                              RIWAYAT PEMERIKSAAN GIZI BALITA                                                " << std::endl;
+    std::cout << "=============================================================================================================================" << RESET << std::endl;
     std::cout << BOLD;
     std::cout << "| " << std::left << std::setw(3) << "No"
               << " | " << std::left << std::setw(16) << "Waktu Periksa"
@@ -182,8 +189,9 @@ void tampilkanRiwayat() {
               << " | " << std::left << std::setw(13) << "Status BB/U"
               << " | " << std::left << std::setw(13) << "Status PB-TB/U"
               << " | " << std::left << std::setw(15) << "Status BB/PB-TB"
+              << " | " << std::left << std::setw(7) << "Rujukan"
               << " |" << RESET << std::endl;
-    std::cout << CYAN << "--------------------------------------------------------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << CYAN << "-----------------------------------------------------------------------------------------------------------------------------" << RESET << std::endl;
     
     int no = 1;
     for (const auto& row : dataRows) {
@@ -203,6 +211,21 @@ void tampilkanRiwayat() {
             return status;
         };
         
+        // Membaca status rujukan, jika tidak tersedia tentukan secara dinamis
+        std::string rujukan = "TIDAK";
+        if (row.size() >= 13) {
+            rujukan = row[12];
+        } else {
+            if (bbu.find("Sangat Kurang") != std::string::npos || 
+                pbu.find("Sangat Pendek") != std::string::npos || 
+                bbh.find("Gizi Buruk") != std::string::npos ||
+                bbh.find("Obesitas") != std::string::npos) {
+                rujukan = "RUJUK";
+            }
+        }
+        
+        std::string colRujukan = (rujukan == "RUJUK") ? (RED + BOLD + "RUJUK" + RESET) : (GREEN + "TIDAK" + RESET);
+        
         std::cout << "| " << std::left << std::setw(3) << no++
                   << " | " << std::left << std::setw(16) << row[0]
                   << " | " << std::left << std::setw(15) << (row[1].length() > 15 ? row[1].substr(0, 12) + "..." : row[1])
@@ -213,10 +236,11 @@ void tampilkanRiwayat() {
                   << " | " << std::left << std::setw(13) << cleanStatus(bbu)
                   << " | " << std::left << std::setw(13) << cleanStatus(pbu)
                   << " | " << std::left << std::setw(15) << cleanStatus(bbh)
+                  << " | " << colRujukan << "  "
                   << " |" << std::endl;
     }
     
-    std::cout << CYAN << "====================================================================================================================" << RESET << std::endl;
+    std::cout << CYAN << "=============================================================================================================================" << RESET << std::endl;
 }
 
 int main() {
