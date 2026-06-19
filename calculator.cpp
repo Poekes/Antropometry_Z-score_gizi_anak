@@ -201,3 +201,55 @@ std::string ZScoreCalculator::getStatusExplanation(StatusGizi status) {
             return "Tidak ada penjelasan.";
     }
 }
+
+// Memeriksa apakah status gizi masuk kategori kritis/gawat yang butuh rujukan
+bool ZScoreCalculator::isCritical(StatusGizi status) {
+    return (status == StatusGizi::BB_SANGAT_KURANG ||
+            status == StatusGizi::TB_SANGAT_PENDEK ||
+            status == StatusGizi::GIZI_BURUK ||
+            status == StatusGizi::OBESITAS);
+}
+
+// Mendapatkan rencana tindakan rujukan medis jika terdeteksi gawat
+std::string ZScoreCalculator::getReferralAction(const ZScoreResult& bbu, const ZScoreResult& pbtbu, const ZScoreResult& bbh) {
+    bool hasBbuCritical = (bbu.status == StatusGizi::BB_SANGAT_KURANG);
+    bool hasTbuCritical = (pbtbu.status == StatusGizi::TB_SANGAT_PENDEK);
+    bool hasWastingCritical = (bbh.status == StatusGizi::GIZI_BURUK);
+    bool hasObesity = (bbh.status == StatusGizi::OBESITAS);
+
+    if (!hasBbuCritical && !hasTbuCritical && !hasWastingCritical && !hasObesity) {
+        return ""; // Tidak kritis
+    }
+
+    std::string action = "";
+    if (hasWastingCritical) {
+        action += "[!] RUJUKAN SEGERA (GIZI BURUK):\n"
+                  "  1. Segera rujuk anak ke Puskesmas, Klinik, atau Rumah Sakit terdekat untuk penanganan klinis.\n"
+                  "  2. Konsultasikan pemberian PMT Pemulihan intensif seperti RUTF (Ready-to-Use Therapeutic Food) atau susu F100.\n"
+                  "  3. Pastikan asupan cairan cukup untuk mencegah dehidrasi berat dan periksa tanda infeksi klinis.\n\n";
+    }
+    if (hasBbuCritical) {
+        action += "[!] PERHATIAN MEDIS (BERAT BADAN SANGAT KURANG):\n"
+                  "  1. Rujuk anak ke Puskesmas atau dokter anak untuk mencari tahu penyebab berat badan sangat rendah.\n"
+                  "  2. Lakukan evaluasi asupan makanan harian (apakah kurang ASI, kurang kalori, atau ada penyakit penyerta).\n"
+                  "  3. Berikan makanan tambahan yang padat gizi secara bertahap.\n\n";
+    }
+    if (hasTbuCritical) {
+        action += "[!] RUJUKAN SPESIALISTIK (SANGAT PENDEK / CHRONIC STUNTING):\n"
+                  "  1. Anak terindikasi stunting tingkat parah. Rujuk ke fasilitas kesehatan tingkat lanjut untuk evaluasi Dokter Spesialis Anak.\n"
+                  "  2. Berikan asupan kaya protein hewani (telur, susu, ikan, daging) dan zat besi secara teratur.\n"
+                  "  3. Evaluasi pola asuh, sanitasi air bersih di rumah, serta riwayat imunisasi dasar anak.\n\n";
+    }
+    if (hasObesity) {
+        action += "[!] KONSULTASI NUTRISI (OBESITAS ANAK):\n"
+                  "  1. Konsultasikan dengan ahli gizi untuk pengaturan menu makan rendah kalori namun padat nutrisi.\n"
+                  "  2. Batasi konsumsi susu formula manis, makanan olahan tinggi lemak, atau jajanan manis.\n"
+                  "  3. Dorong aktivitas fisik anak (bermain aktif merangkak/berjalan/berlari) minimal 60 menit sehari.\n\n";
+    }
+
+    action += "PEMANTAUAN UMUM POSYANDU:\n"
+              "  - Lakukan penimbangan berat badan dan pengukuran tinggi badan setiap 1-2 minggu di bawah pengawasan Bidan Desa.\n"
+              "  - Bantu orang tua untuk mencatat perkembangan tumbuh kembang anak di Buku KIA.";
+              
+    return action;
+}
