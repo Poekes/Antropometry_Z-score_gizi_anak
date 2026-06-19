@@ -4,6 +4,10 @@
 #include <algorithm>
 #include <iomanip>
 #include <cmath>
+#include <cstdlib>
+#include <fstream>
+#include <ctime>
+#include <sstream>
 #include "zscore_data.h"
 #include "json_parser.h"
 #include "calculator.h"
@@ -22,6 +26,15 @@ const std::string MAGENTA = "\033[35m";
 void clearInput() {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+// Fungsi portabel untuk membersihkan layar terminal
+void clearScreen() {
+    #ifdef _WIN32
+        std::system("cls");
+    #else
+        std::system("clear");
+    #endif
 }
 
 // Fungsi bantu untuk mendapatkan warna berdasarkan kategori status gizi
@@ -64,16 +77,158 @@ void tampilkanHeader() {
     std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
 }
 
+// Menyimpan hasil kalkulasi pemeriksaan ke file CSV eksternal
+void simpanKeRiwayat(const ChildProfile& child, const ZScoreResult& bbu, const ZScoreResult& pbtbu, const ZScoreResult& bbh) {
+    std::string filename = "riwayat_pemeriksaan.csv";
+    
+    // Periksa apakah berkas kosong/belum ada untuk menulis header
+    std::ifstream testFile(filename);
+    bool writeHeader = !testFile.is_open() || testFile.peek() == std::ifstream::traits_type::eof();
+    testFile.close();
+    
+    std::ofstream outFile(filename, std::ios::app);
+    if (!outFile.is_open()) {
+        std::cerr << RED << "[ERROR] Gagal membuka file riwayat untuk mencatat data!" << RESET << std::endl;
+        return;
+    }
+    
+    if (writeHeader) {
+        outFile << "Tanggal/Waktu,Nama,Jenis Kelamin,Usia (Bulan),Berat (kg),Tinggi (cm),"
+                << "Z-Score BB/U,Status BB/U,"
+                << "Z-Score PB_TB/U,Status PB_TB/U,"
+                << "Z-Score BB/PB_TB,Status BB/PB_TB\n";
+    }
+    
+    // Mengambil waktu lokal sistem saat ini
+    std::time_t rawtime = std::time(nullptr);
+    struct std::tm* timeinfo = std::localtime(&rawtime);
+    char timeBuffer[80];
+    std::strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M", timeinfo);
+    
+    // Ganti koma di nama anak agar struktur CSV tidak rusak
+    std::string cleanName = child.nama;
+    std::replace(cleanName.begin(), cleanName.end(), ',', ' ');
+    
+    outFile << timeBuffer << ","
+            << cleanName << ","
+            << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << ","
+            << child.umur_bulan << ","
+            << std::fixed << std::setprecision(1) << child.berat_kg << ","
+            << std::fixed << std::setprecision(1) << child.tinggi_cm << ","
+            << std::fixed << std::setprecision(2) << bbu.z_score << "," << bbu.nama_status << ","
+            << std::fixed << std::setprecision(2) << pbtbu.z_score << "," << pbtbu.nama_status << ",";
+            
+    if (bbh.status != StatusGizi::TIDAK_TERDEFINISI) {
+        outFile << std::fixed << std::setprecision(2) << bbh.z_score << "," << bbh.nama_status << "\n";
+    } else {
+        outFile << "N/A," << bbh.nama_status << "\n";
+    }
+    
+    outFile.close();
+}
+
+// Pemisah kolom CSV sederhana
+std::vector<std::string> splitCsvLine(const std::string& line) {
+    std::vector<std::string> tokens;
+    std::string token;
+    std::stringstream ss(line);
+    while (std::getline(ss, token, ',')) {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
+
+// Membaca file CSV dan menampilkannya sebagai tabel rapi di console
+void tampilkanRiwayat() {
+    std::string filename = "riwayat_pemeriksaan.csv";
+    std::ifstream inFile(filename);
+    if (!inFile.is_open()) {
+        std::cout << YELLOW << "Belum ada catatan riwayat pemeriksaan (berkas belum ada)." << RESET << std::endl;
+        std::cout << "Silakan pilih menu [1] untuk mengisi pemeriksaan baru." << std::endl;
+        return;
+    }
+    
+    std::string line;
+    // Lewati baris header CSV
+    if (!std::getline(inFile, line)) {
+        std::cout << YELLOW << "Berkas riwayat kosong." << RESET << std::endl;
+        return;
+    }
+    
+    std::vector<std::vector<std::string>> dataRows;
+    while (std::getline(inFile, line)) {
+        if (line.empty()) continue;
+        dataRows.push_back(splitCsvLine(line));
+    }
+    inFile.close();
+    
+    if (dataRows.empty()) {
+        std::cout << YELLOW << "Belum ada riwayat pemeriksaan anak terdaftar." << RESET << std::endl;
+        return;
+    }
+    
+    std::cout << BOLD << CYAN;
+    std::cout << "====================================================================================================================" << std::endl;
+    std::cout << "                                           RIWAYAT PEMERIKSAAN GIZI BALITA                                          " << std::endl;
+    std::cout << "====================================================================================================================" << RESET << std::endl;
+    std::cout << BOLD;
+    std::cout << "| " << std::left << std::setw(3) << "No"
+              << " | " << std::left << std::setw(16) << "Waktu Periksa"
+              << " | " << std::left << std::setw(15) << "Nama Balita"
+              << " | " << std::left << std::setw(3) << "JK"
+              << " | " << std::left << std::setw(4) << "Usia"
+              << " | " << std::left << std::setw(5) << "Berat"
+              << " | " << std::left << std::setw(6) << "Tinggi"
+              << " | " << std::left << std::setw(13) << "Status BB/U"
+              << " | " << std::left << std::setw(13) << "Status PB-TB/U"
+              << " | " << std::left << std::setw(15) << "Status BB/PB-TB"
+              << " |" << RESET << std::endl;
+    std::cout << CYAN << "--------------------------------------------------------------------------------------------------------------------" << RESET << std::endl;
+    
+    int no = 1;
+    for (const auto& row : dataRows) {
+        if (row.size() < 12) continue;
+        
+        std::string jk = (row[2] == "Laki-laki") ? "L" : "P";
+        std::string bbu = row[7];
+        std::string pbu = row[9];
+        std::string bbh = row[11];
+        
+        // Mempersingkat teks medis yang panjang agar muat di kolom
+        auto cleanStatus = [](const std::string& status) {
+            size_t pos = status.find(" (");
+            if (pos != std::string::npos) {
+                return status.substr(0, pos);
+            }
+            return status;
+        };
+        
+        std::cout << "| " << std::left << std::setw(3) << no++
+                  << " | " << std::left << std::setw(16) << row[0]
+                  << " | " << std::left << std::setw(15) << (row[1].length() > 15 ? row[1].substr(0, 12) + "..." : row[1])
+                  << " | " << std::left << std::setw(3) << jk
+                  << " | " << std::left << std::setw(4) << row[3] + " bln"
+                  << " | " << std::left << std::setw(5) << row[4] + " kg"
+                  << " | " << std::left << std::setw(6) << row[5] + " cm"
+                  << " | " << std::left << std::setw(13) << cleanStatus(bbu)
+                  << " | " << std::left << std::setw(13) << cleanStatus(pbu)
+                  << " | " << std::left << std::setw(15) << cleanStatus(bbh)
+                  << " |" << std::endl;
+    }
+    
+    std::cout << CYAN << "====================================================================================================================" << RESET << std::endl;
+}
+
 int main() {
     ReferenceData refData;
     std::string pathReference = "data/zscore_reference.json";
 
+    clearScreen();
     tampilkanHeader();
 
     // Memuat data referensi JSON
     std::cout << "Memuat data referensi Z-Score dari [" << pathReference << "]... ";
     if (!JsonParser::loadReferenceData(pathReference, refData)) {
-        // Coba jalur alternatif jika dijalankan dari subfolder berbeda
         pathReference = "../data/zscore_reference.json";
         std::cout << std::endl << "Mencoba jalur alternatif [" << pathReference << "]... ";
         if (!JsonParser::loadReferenceData(pathReference, refData)) {
@@ -84,159 +239,187 @@ int main() {
             return 1;
         }
     }
-    std::cout << GREEN << "BERHASIL!" << RESET << std::endl << std::endl;
+    std::cout << GREEN << "BERHASIL!" << RESET << std::endl;
+    std::cout << "Tekan ENTER untuk masuk ke Menu Utama...";
+    std::cin.get();
 
     bool mainLoop = true;
     while (mainLoop) {
-        ChildProfile child;
+        clearScreen();
+        tampilkanHeader();
         
-        std::cout << BOLD << "--- INPUT DATA BALITA ---" << RESET << std::endl;
-
-        // 1. Input Nama Balita
-        while (true) {
-            std::cout << "Masukkan Nama Balita: ";
-            std::getline(std::cin >> std::ws, child.nama);
-            if (!child.nama.empty()) {
-                break;
-            }
-            std::cout << RED << "Nama tidak boleh kosong!" << RESET << std::endl;
-        }
-
-        // 2. Input Jenis Kelamin
-        while (true) {
-            std::cout << "Masukkan Jenis Kelamin (L = Laki-laki, P = Perempuan): ";
-            char jk;
-            std::cin >> jk;
-            jk = std::toupper(static_cast<unsigned char>(jk));
-            if (jk == 'L' || jk == 'P') {
-                child.jenis_kelamin = jk;
-                break;
-            }
-            std::cout << RED << "Input tidak valid! Masukkan 'L' atau 'P'." << RESET << std::endl;
+        std::cout << BOLD << "--- MENU UTAMA ---" << RESET << std::endl;
+        std::cout << " [1] Ukur Antropometri Baru" << std::endl;
+        std::cout << " [2] Lihat Riwayat Pemeriksaan Anak" << std::endl;
+        std::cout << " [3] Keluar Aplikasi" << std::endl;
+        std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+        std::cout << "Pilih Menu (1-3): ";
+        
+        int menuPilihan = 0;
+        if (!(std::cin >> menuPilihan)) {
+            std::cout << RED << "Input tidak valid! Harap pilih angka 1, 2, atau 3." << RESET << std::endl;
             clearInput();
+            std::cout << "\nTekan ENTER untuk melanjutkan...";
+            std::cin.get();
+            continue;
         }
-
-        // 3. Input Umur dalam Bulan
-        while (true) {
-            std::cout << "Masukkan Umur Anak (0 - 60 Bulan): ";
-            int umur;
-            if (std::cin >> umur) {
-                if (umur >= 0 && umur <= 60) {
-                    child.umur_bulan = umur;
-                    break;
-                }
-            }
-            std::cout << RED << "Umur harus berupa angka antara 0 hingga 60 bulan!" << RESET << std::endl;
-            clearInput();
-        }
-
-        // 4. Input Berat Badan (kg)
-        while (true) {
-            std::cout << "Masukkan Berat Badan (kg) [contoh: 8.5]: ";
-            double berat;
-            if (std::cin >> berat) {
-                if (berat > 0.0 && berat < 100.0) {
-                    child.berat_kg = berat;
-                    break;
-                }
-            }
-            std::cout << RED << "Berat badan harus berupa angka positif yang valid!" << RESET << std::endl;
-            clearInput();
-        }
-
-        // 5. Input Tinggi/Panjang Badan (cm)
-        while (true) {
-            std::cout << "Masukkan ";
-            if (child.umur_bulan <= 24) {
-                std::cout << "Panjang Badan (cm) [0-24 bulan diukur telentang]: ";
-            } else {
-                std::cout << "Tinggi Badan (cm) [25-60 bulan diukur berdiri]: ";
-            }
-            
-            double tinggi;
-            if (std::cin >> tinggi) {
-                if (tinggi > 0.0 && tinggi < 200.0) {
-                    child.tinggi_cm = tinggi;
-                    break;
-                }
-            }
-            std::cout << RED << "Tinggi/panjang badan harus berupa angka positif yang valid!" << RESET << std::endl;
-            clearInput();
-        }
-
-        // Bersihkan buffer input setelah semua data terisi
         clearInput();
 
-        // 6. Jalankan Perhitungan Z-score
-        ZScoreResult resBBU, resPBTBU, resBBH;
-        ZScoreCalculator::calculateStatus(refData, child, resBBU, resPBTBU, resBBH);
-
-        // 7. Tampilkan Hasil
-        std::cout << std::endl;
-        std::cout << BLUE << "=====================================================================" << RESET << std::endl;
-        std::cout << BOLD << BLUE << "                    HASIL DIAGNOSIS STATUS GIZI                      " << RESET << std::endl;
-        std::cout << BLUE << "=====================================================================" << RESET << std::endl;
-        
-        std::cout << BOLD << "PROFIL BALITA:" << RESET << std::endl;
-        std::cout << "  - Nama Balita    : " << child.nama << std::endl;
-        std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
-        std::cout << "  - Umur / Usia    : " << child.umur_bulan << " Bulan" 
-                  << " (" << (child.umur_bulan <= 24 ? "Diukur telentang / Panjang Badan" : "Diukur berdiri / Tinggi Badan") << ")" << std::endl;
-        std::cout << "  - Berat Badan    : " << std::fixed << std::setprecision(1) << child.berat_kg << " kg" << std::endl;
-        std::cout << "  - Tinggi/Panjang : " << child.tinggi_cm << " cm" 
-                  << " (Dibulatkan ke: " << (std::round(child.tinggi_cm * 2.0) / 2.0) << " cm)" << std::endl;
-        std::cout << BLUE << "---------------------------------------------------------------------" << RESET << std::endl << std::endl;
-
-        std::cout << BOLD << "HASIL DIAGNOSIS 3 INDIKATOR UTAMA:" << RESET << std::endl << std::endl;
-
-        // Tampilkan Indikator 1: BB/U
-        std::string colorBBU = getStatusColor(resBBU.status);
-        std::cout << BOLD << "1. Berat Badan menurut Umur (BB/U)" << RESET << std::endl;
-        std::cout << "   - Nilai Z-Score : " << std::fixed << std::setprecision(2) << resBBU.z_score << " SD" << std::endl;
-        std::cout << "   - Status Gizi   : " << colorBBU << BOLD << "[" << resBBU.nama_status << "]" << RESET << std::endl;
-        std::cout << "   - Penjelasan    : " << resBBU.penjelasan << std::endl << std::endl;
-
-        // Tampilkan Indikator 2: PB/U atau TB/U
-        std::string labelPBTBU = (child.umur_bulan <= 24) ? "Panjang Badan menurut Umur (PB/U)" : "Tinggi Badan menurut Umur (TB/U)";
-        std::string colorPBTBU = getStatusColor(resPBTBU.status);
-        std::cout << BOLD << "2. " << labelPBTBU << RESET << std::endl;
-        std::cout << "   - Nilai Z-Score : " << resPBTBU.z_score << " SD" << std::endl;
-        std::cout << "   - Status Gizi   : " << colorPBTBU << BOLD << "[" << resPBTBU.nama_status << "]" << RESET << std::endl;
-        std::cout << "   - Penjelasan    : " << resPBTBU.penjelasan << std::endl << std::endl;
-
-        // Tampilkan Indikator 3: BB/PB atau BB/TB
-        std::string labelBBH = (child.umur_bulan <= 24) ? "Berat Badan menurut Panjang Badan (BB/PB)" : "Berat Badan menurut Tinggi Badan (BB/TB)";
-        std::string colorBBH = getStatusColor(resBBH.status);
-        std::cout << BOLD << "3. " << labelBBH << RESET << std::endl;
-        if (resBBH.status != StatusGizi::TIDAK_TERDEFINISI) {
-            std::cout << "   - Nilai Z-Score : " << resBBH.z_score << " SD" << std::endl;
-        } else {
-            std::cout << "   - Nilai Z-Score : N/A" << std::endl;
-        }
-        std::cout << "   - Status Gizi   : " << colorBBH << BOLD << "[" << resBBH.nama_status << "]" << RESET << std::endl;
-        std::cout << "   - Penjelasan    : " << resBBH.penjelasan << std::endl << std::endl;
-
-        std::cout << BLUE << "=====================================================================" << RESET << std::endl;
-
-        // Menanyakan apakah ingin menghitung lagi
-        while (true) {
-            std::cout << "Apakah Anda ingin menghitung data anak lain? (y/n): ";
-            char pilihan;
-            std::cin >> pilihan;
-            pilihan = std::tolower(static_cast<unsigned char>(pilihan));
-            clearInput();
+        if (menuPilihan == 1) {
+            clearScreen();
+            tampilkanHeader();
             
-            if (pilihan == 'y') {
-                std::cout << std::endl;
-                break;
-            } else if (pilihan == 'n') {
-                mainLoop = false;
-                break;
+            ChildProfile child;
+            std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl;
+
+            // 1. Input Nama
+            while (true) {
+                std::cout << "Masukkan Nama Balita: ";
+                std::getline(std::cin >> std::ws, child.nama);
+                if (!child.nama.empty()) {
+                    break;
+                }
+                std::cout << RED << "Nama tidak boleh kosong!" << RESET << std::endl;
             }
-            std::cout << RED << "Input tidak valid! Masukkan 'y' atau 'n'." << RESET << std::endl;
+
+            // 2. Input Jenis Kelamin
+            while (true) {
+                std::cout << "Masukkan Jenis Kelamin (L = Laki-laki, P = Perempuan): ";
+                char jk;
+                std::cin >> jk;
+                jk = std::toupper(static_cast<unsigned char>(jk));
+                if (jk == 'L' || jk == 'P') {
+                    child.jenis_kelamin = jk;
+                    break;
+                }
+                std::cout << RED << "Input tidak valid! Masukkan 'L' atau 'P'." << RESET << std::endl;
+                clearInput();
+            }
+
+            // 3. Input Umur
+            while (true) {
+                std::cout << "Masukkan Umur Anak (0 - 60 Bulan): ";
+                int umur;
+                if (std::cin >> umur) {
+                    if (umur >= 0 && umur <= 60) {
+                        child.umur_bulan = umur;
+                        break;
+                    }
+                }
+                std::cout << RED << "Umur harus berupa angka antara 0 hingga 60 bulan!" << RESET << std::endl;
+                clearInput();
+            }
+
+            // 4. Input Berat Badan
+            while (true) {
+                std::cout << "Masukkan Berat Badan (kg) [contoh: 8.5]: ";
+                double berat;
+                if (std::cin >> berat) {
+                    if (berat > 0.0 && berat < 100.0) {
+                        child.berat_kg = berat;
+                        break;
+                    }
+                }
+                std::cout << RED << "Berat badan harus berupa angka positif yang valid!" << RESET << std::endl;
+                clearInput();
+            }
+
+            // 5. Input Tinggi/Panjang
+            while (true) {
+                std::cout << "Masukkan ";
+                if (child.umur_bulan <= 24) {
+                    std::cout << "Panjang Badan (cm) [0-24 bulan diukur telentang]: ";
+                } else {
+                    std::cout << "Tinggi Badan (cm) [25-60 bulan diukur berdiri]: ";
+                }
+                
+                double tinggi;
+                if (std::cin >> tinggi) {
+                    if (tinggi > 0.0 && tinggi < 200.0) {
+                        child.tinggi_cm = tinggi;
+                        break;
+                    }
+                }
+                std::cout << RED << "Tinggi/panjang badan harus berupa angka positif yang valid!" << RESET << std::endl;
+                clearInput();
+            }
+            clearInput();
+
+            // Kalkulasi
+            ZScoreResult resBBU, resPBTBU, resBBH;
+            ZScoreCalculator::calculateStatus(refData, child, resBBU, resPBTBU, resBBH);
+
+            // Simpan Ke File CSV
+            simpanKeRiwayat(child, resBBU, resPBTBU, resBBH);
+
+            // Tampilkan Hasil Diagnosis
+            clearScreen();
+            std::cout << BLUE << "=====================================================================" << RESET << std::endl;
+            std::cout << BOLD << BLUE << "                    HASIL DIAGNOSIS STATUS GIZI                      " << RESET << std::endl;
+            std::cout << BLUE << "=====================================================================" << RESET << std::endl;
+            
+            std::cout << BOLD << "PROFIL BALITA:" << RESET << std::endl;
+            std::cout << "  - Nama Balita    : " << child.nama << std::endl;
+            std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
+            std::cout << "  - Umur / Usia    : " << child.umur_bulan << " Bulan" 
+                      << " (" << (child.umur_bulan <= 24 ? "Diukur telentang / Panjang Badan" : "Diukur berdiri / Tinggi Badan") << ")" << std::endl;
+            std::cout << "  - Berat Badan    : " << std::fixed << std::setprecision(1) << child.berat_kg << " kg" << std::endl;
+            std::cout << "  - Tinggi/Panjang : " << child.tinggi_cm << " cm" 
+                      << " (Dibulatkan ke: " << (std::round(child.tinggi_cm * 2.0) / 2.0) << " cm)" << std::endl;
+            std::cout << BLUE << "---------------------------------------------------------------------" << RESET << std::endl << std::endl;
+
+            std::cout << BOLD << "HASIL DIAGNOSIS 3 INDIKATOR UTAMA:" << RESET << std::endl << std::endl;
+
+            // Indikator 1: BB/U
+            std::string colorBBU = getStatusColor(resBBU.status);
+            std::cout << BOLD << "1. Berat Badan menurut Umur (BB/U)" << RESET << std::endl;
+            std::cout << "   - Nilai Z-Score : " << std::fixed << std::setprecision(2) << resBBU.z_score << " SD" << std::endl;
+            std::cout << "   - Status Gizi   : " << colorBBU << BOLD << "[" << resBBU.nama_status << "]" << RESET << std::endl;
+            std::cout << "   - Penjelasan    : " << resBBU.penjelasan << std::endl << std::endl;
+
+            // Indikator 2: PB/U atau TB/U
+            std::string labelPBTBU = (child.umur_bulan <= 24) ? "Panjang Badan menurut Umur (PB/U)" : "Tinggi Badan menurut Umur (TB/U)";
+            std::string colorPBTBU = getStatusColor(resPBTBU.status);
+            std::cout << BOLD << "2. " << labelPBTBU << RESET << std::endl;
+            std::cout << "   - Nilai Z-Score : " << resPBTBU.z_score << " SD" << std::endl;
+            std::cout << "   - Status Gizi   : " << colorPBTBU << BOLD << "[" << resPBTBU.nama_status << "]" << RESET << std::endl;
+            std::cout << "   - Penjelasan    : " << resPBTBU.penjelasan << std::endl << std::endl;
+
+            // Indikator 3: BB/PB atau BB/TB
+            std::string labelBBH = (child.umur_bulan <= 24) ? "Berat Badan menurut Panjang Badan (BB/PB)" : "Berat Badan menurut Tinggi Badan (BB/TB)";
+            std::string colorBBH = getStatusColor(resBBH.status);
+            std::cout << BOLD << "3. " << labelBBH << RESET << std::endl;
+            if (resBBH.status != StatusGizi::TIDAK_TERDEFINISI) {
+                std::cout << "   - Nilai Z-Score : " << resBBH.z_score << " SD" << std::endl;
+            } else {
+                std::cout << "   - Nilai Z-Score : N/A" << std::endl;
+            }
+            std::cout << "   - Status Gizi   : " << colorBBH << BOLD << "[" << resBBH.nama_status << "]" << RESET << std::endl;
+            std::cout << "   - Penjelasan    : " << resBBH.penjelasan << std::endl << std::endl;
+
+            std::cout << BLUE << "=====================================================================" << RESET << std::endl;
+            std::cout << GREEN << BOLD << "Info: Data di atas telah otomatis disimpan ke file 'riwayat_pemeriksaan.csv'!" << RESET << std::endl;
+            
+            std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
+            std::cin.get();
+        } 
+        else if (menuPilihan == 2) {
+            clearScreen();
+            tampilkanRiwayat();
+            std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
+            std::cin.get();
+        } 
+        else if (menuPilihan == 3) {
+            mainLoop = false;
+        } 
+        else {
+            std::cout << RED << "Pilihan menu tidak terdaftar! Pilih 1, 2, atau 3." << RESET << std::endl;
+            std::cout << "\nTekan ENTER untuk melanjutkan...";
+            std::cin.get();
         }
     }
 
-    std::cout << std::endl << BOLD << GREEN << "Terima kasih telah menggunakan aplikasi ini. Jaga kesehatan anak Indonesia!" << RESET << std::endl;
+    clearScreen();
+    std::cout << std::endl << BOLD << GREEN << "Terima kasih telah menggunakan aplikasi ini. Jaga kesehatan anak Indonesia!" << RESET << std::endl << std::endl;
     return 0;
 }
