@@ -28,18 +28,18 @@ Aplikasi ini dibuat menggunakan bahasa pemrograman C++. Anda memerlukan compiler
 ### Kompilasi (Compile)
 Jalankan perintah berikut di terminal/command prompt Anda:
 ```bash
-g++ -std=c++11 -o kalkulator_gizi src/main.cpp src/json_parser.cpp src/calculator.cpp
+g++ -std=c++11 -o nutriguard src/main.cpp src/json_parser.cpp src/calculator.cpp
 ```
 
 ### Menjalankan Aplikasi (Run)
 Setelah berhasil dikompilasi, jalankan program:
 * **Linux/macOS**:
   ```bash
-  ./kalkulator_gizi
+  ./nutriguard
   ```
 * **Windows**:
   ```cmd
-  kalkulator_gizi.exe
+  nutriguard.exe
   ```
 
 ---
