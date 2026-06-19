@@ -28,18 +28,18 @@ Aplikasi ini dibuat menggunakan bahasa pemrograman C++. Anda memerlukan compiler
 ### Kompilasi (Compile)
 Jalankan perintah berikut di terminal/command prompt Anda:
 ```bash
-g++ -std=c++11 -o gizigrow src/main.cpp src/json_parser.cpp src/calculator.cpp
+g++ -std=c++11 -o antropometri src/main.cpp src/json_parser.cpp src/calculator.cpp
 ```
 
 ### Menjalankan Aplikasi (Run)
 Setelah berhasil dikompilasi, jalankan program:
 * **Linux/macOS**:
   ```bash
-  ./gizigrow
+  ./antropometri
   ```
 * **Windows**:
   ```cmd
-  gizigrow.exe
+  antropometri.exe
   ```
 
 ---
