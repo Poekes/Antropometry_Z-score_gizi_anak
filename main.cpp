@@ -146,7 +146,7 @@ std::vector<std::string> splitCsvLine(const std::string& line) {
 }
 
 // Membaca file CSV dan menampilkannya sebagai tabel rapi di console
-void tampilkanRiwayat() {
+void tampilkanRiwayat(bool hanyaRujukan = false) {
     std::string filename = "riwayat_pemeriksaan.csv";
     std::ifstream inFile(filename);
     if (!inFile.is_open()) {
@@ -174,9 +174,52 @@ void tampilkanRiwayat() {
         return;
     }
     
+    // Lakukan pemfilteran data jika hanya menampilkan rujukan
+    std::vector<std::vector<std::string>> filteredRows;
+    for (const auto& row : dataRows) {
+        if (row.size() < 12) continue;
+        
+        std::string bbu = row[7];
+        std::string pbu = row[9];
+        std::string bbh = row[11];
+        
+        std::string rujukan = "TIDAK";
+        if (row.size() >= 13) {
+            rujukan = row[12];
+        } else {
+            if (bbu.find("Sangat Kurang") != std::string::npos || 
+                pbu.find("Sangat Pendek") != std::string::npos || 
+                bbh.find("Gizi Buruk") != std::string::npos ||
+                bbh.find("Obesitas") != std::string::npos) {
+                rujukan = "RUJUK";
+            }
+        }
+        
+        if (hanyaRujukan) {
+            if (rujukan == "RUJUK") {
+                filteredRows.push_back(row);
+            }
+        } else {
+            filteredRows.push_back(row);
+        }
+    }
+    
+    if (filteredRows.empty()) {
+        if (hanyaRujukan) {
+            std::cout << GREEN << BOLD << "\n[✓] Kabar Baik! Tidak ada riwayat balita yang memerlukan rujukan medis saat ini." << RESET << std::endl;
+        } else {
+            std::cout << YELLOW << "Belum ada riwayat pemeriksaan anak terdaftar." << RESET << std::endl;
+        }
+        return;
+    }
+    
     std::cout << BOLD << CYAN;
     std::cout << "=============================================================================================================================" << std::endl;
-    std::cout << "                                              RIWAYAT PEMERIKSAAN GIZI BALITA                                                " << std::endl;
+    if (hanyaRujukan) {
+        std::cout << "                                         RIWAYAT BALITA DIRUJUK (KONDISI GAWAT)                                              " << std::endl;
+    } else {
+        std::cout << "                                              RIWAYAT PEMERIKSAAN GIZI BALITA                                                " << std::endl;
+    }
     std::cout << "=============================================================================================================================" << RESET << std::endl;
     std::cout << BOLD;
     std::cout << "| " << std::left << std::setw(3) << "No"
@@ -190,13 +233,11 @@ void tampilkanRiwayat() {
               << " | " << std::left << std::setw(13) << "Status PB-TB/U"
               << " | " << std::left << std::setw(15) << "Status BB/PB-TB"
               << " | " << std::left << std::setw(7) << "Rujukan"
-              << " |" << RESET << std::endl;
+              << " | " << RESET << std::endl;
     std::cout << CYAN << "-----------------------------------------------------------------------------------------------------------------------------" << RESET << std::endl;
     
     int no = 1;
-    for (const auto& row : dataRows) {
-        if (row.size() < 12) continue;
-        
+    for (const auto& row : filteredRows) {
         std::string jk = (row[2] == "Laki-laki") ? "L" : "P";
         std::string bbu = row[7];
         std::string pbu = row[9];
@@ -211,7 +252,6 @@ void tampilkanRiwayat() {
             return status;
         };
         
-        // Membaca status rujukan, jika tidak tersedia tentukan secara dinamis
         std::string rujukan = "TIDAK";
         if (row.size() >= 13) {
             rujukan = row[12];
@@ -274,14 +314,15 @@ int main() {
         
         std::cout << BOLD << "--- MENU UTAMA ---" << RESET << std::endl;
         std::cout << " [1] Ukur Antropometri Baru" << std::endl;
-        std::cout << " [2] Lihat Riwayat Pemeriksaan Anak" << std::endl;
-        std::cout << " [3] Keluar Aplikasi" << std::endl;
+        std::cout << " [2] Lihat Semua Riwayat Pemeriksaan" << std::endl;
+        std::cout << " [3] Lihat Riwayat Rujukan Medis (Gawat)" << std::endl;
+        std::cout << " [4] Keluar Aplikasi" << std::endl;
         std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
-        std::cout << "Pilih Menu (1-3): ";
+        std::cout << "Pilih Menu (1-4): ";
         
         int menuPilihan = 0;
         if (!(std::cin >> menuPilihan)) {
-            std::cout << RED << "Input tidak valid! Harap pilih angka 1, 2, atau 3." << RESET << std::endl;
+            std::cout << RED << "Input tidak valid! Harap pilih angka 1-4." << RESET << std::endl;
             clearInput();
             std::cout << "\nTekan ENTER untuk melanjutkan...";
             std::cin.get();
@@ -494,15 +535,21 @@ int main() {
         } 
         else if (menuPilihan == 2) {
             clearScreen();
-            tampilkanRiwayat();
+            tampilkanRiwayat(false);
             std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
             std::cin.get();
         } 
         else if (menuPilihan == 3) {
+            clearScreen();
+            tampilkanRiwayat(true);
+            std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
+            std::cin.get();
+        } 
+        else if (menuPilihan == 4) {
             mainLoop = false;
         } 
         else {
-            std::cout << RED << "Pilihan menu tidak terdaftar! Pilih 1, 2, atau 3." << RESET << std::endl;
+            std::cout << RED << "Pilihan menu tidak terdaftar! Pilih 1, 2, 3, atau 4." << RESET << std::endl;
             std::cout << "\nTekan ENTER untuk melanjutkan...";
             std::cin.get();
         }
