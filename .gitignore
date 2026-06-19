@@ -1,7 +1,7 @@
 .agents/
 gizi_kalkulator
 kalkulator_gizi
-antropometri
+antropometri_gizi_z_score
 *.exe
 *.o
 riwayat_pemeriksaan.csv
