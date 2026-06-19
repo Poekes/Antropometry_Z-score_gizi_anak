@@ -1,7 +1,7 @@
 .agents/
 gizi_kalkulator
 kalkulator_gizi
-nutriguard
+gizigrow
 *.exe
 *.o
 riwayat_pemeriksaan.csv
