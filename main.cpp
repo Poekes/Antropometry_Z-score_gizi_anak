@@ -449,6 +449,20 @@ int main() {
             std::cout << "   - Penjelasan    : " << resBBH.penjelasan << std::endl << std::endl;
 
             std::cout << BLUE << "=====================================================================" << RESET << std::endl;
+
+            // Cek apakah ada kondisi kritis yang memerlukan rujukan segera
+            if (ZScoreCalculator::isCritical(resBBU.status) || 
+                ZScoreCalculator::isCritical(resPBTBU.status) || 
+                ZScoreCalculator::isCritical(resBBH.status)) {
+                
+                std::string tindakanRujukan = ZScoreCalculator::getReferralAction(resBBU, resPBTBU, resBBH);
+                std::cout << RED << "=====================================================================" << RESET << std::endl;
+                std::cout << RED << BOLD << "            ⚠️  REKOMENDASI RUJUKAN & TINDAKAN MEDIS GAWAT  ⚠️" << RESET << std::endl;
+                std::cout << RED << "=====================================================================" << RESET << std::endl;
+                std::cout << tindakanRujukan << std::endl;
+                std::cout << RED << "=====================================================================" << RESET << std::endl << std::endl;
+            }
+
             std::cout << GREEN << BOLD << "Info: Data di atas telah otomatis disimpan ke file 'riwayat_pemeriksaan.csv'!" << RESET << std::endl;
             
             std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
