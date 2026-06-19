@@ -28,7 +28,7 @@ Aplikasi ini dibuat menggunakan bahasa pemrograman C++. Anda memerlukan compiler
 ### Kompilasi (Compile)
 Jalankan perintah berikut di terminal/command prompt Anda:
 ```bash
-g++ -o kalkulator_gizi main.cpp
+g++ -std=c++11 -o kalkulator_gizi main.cpp json_parser.cpp calculator.cpp
 ```
 
 ### Menjalankan Aplikasi (Run)
