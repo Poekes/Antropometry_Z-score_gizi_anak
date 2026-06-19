@@ -70,7 +70,7 @@ std::string getStatusColor(StatusGizi status) {
 // Menampilkan header aplikasi
 void tampilkanHeader() {
     std::cout << MAGENTA << "=====================================================================" << RESET << std::endl;
-    std::cout << BOLD << CYAN << "      KALKULATOR GIZI ANAK & DETEKSI Z-SCORE (KEMENKES RI 2020)      " << RESET << std::endl;
+    std::cout << BOLD << CYAN << "       GIZI ANAK & DETEKSI Z-SCORE (KEMENKES RI 2020)      " << RESET << std::endl;
     std::cout << MAGENTA << "=====================================================================" << RESET << std::endl;
     std::cout << " Alat bantu cepat untuk Kader Posyandu & Bidan Desa dalam menentukan" << std::endl;
     std::cout << " status gizi balita usia 0 hingga 60 bulan secara akurat." << std::endl;
