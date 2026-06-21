@@ -290,22 +290,17 @@ int main() {
     clearScreen();
     tampilkanHeader();
 
-    // Memuat data referensi JSON
-    std::cout << "Memuat data referensi Z-Score dari [" << pathReference << "]... ";
+    // Memuat data referensi JSON secara senyap
     if (!JsonParser::loadReferenceData(pathReference, refData)) {
         pathReference = "../data/zscore_reference.json";
-        std::cout << std::endl << "Mencoba jalur alternatif [" << pathReference << "]... ";
         if (!JsonParser::loadReferenceData(pathReference, refData)) {
-            std::cout << RED << "GAGAL!" << RESET << std::endl;
+            std::cout << RED << "GAGAL memuat data referensi Z-Score!" << RESET << std::endl;
             std::cout << "Pastikan file database 'zscore_reference.json' berada di direktori 'data/'." << std::endl;
             std::cout << "Tekan ENTER untuk keluar...";
             std::cin.get();
             return 1;
         }
     }
-    std::cout << GREEN << "BERHASIL!" << RESET << std::endl;
-    std::cout << "Tekan ENTER untuk masuk ke Menu Utama...";
-    std::cin.get();
 
     bool mainLoop = true;
     while (mainLoop) {
