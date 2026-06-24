@@ -3,6 +3,7 @@
 #include "../models/RiwayatModel.h"
 #include "../json_parser.h"
 #include "../calculator.h"
+#include "../models/DatabaseSeeder.h"
 
 #include <iostream>
 #include <iomanip>
@@ -30,6 +31,9 @@ void AppController::run() {
             return;
         }
     }
+
+    // Jalankan Seeder
+    DatabaseSeeder::run(refData);
 
     bool appLoop = true;
     while (appLoop) {
