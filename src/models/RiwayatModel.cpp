@@ -142,3 +142,25 @@ std::vector<std::vector<std::string>> RiwayatModel::getFilteredRiwayat(bool hany
     
     return filteredRows;
 }
+
+std::vector<ChildProfile> RiwayatModel::getUniqueChildren() {
+    std::vector<ChildProfile> children;
+    std::vector<std::string> seenNames;
+    auto allData = getAllRiwayat();
+    
+    for (const auto& row : allData) {
+        if (row.size() < 3) continue;
+        std::string nama = row[1];
+        
+        // Cek apakah nama sudah ada dalam daftar
+        if (std::find(seenNames.begin(), seenNames.end(), nama) == seenNames.end()) {
+            seenNames.push_back(nama);
+            ChildProfile cp;
+            cp.nama = nama;
+            cp.jenis_kelamin = (row[2] == "Laki-laki") ? 'L' : 'P';
+            children.push_back(cp);
+        }
+    }
+    
+    return children;
+}
