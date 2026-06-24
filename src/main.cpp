@@ -8,6 +8,7 @@
 #include <fstream>
 #include <ctime>
 #include <sstream>
+#include <cctype>
 #include "zscore_data.h"
 #include "json_parser.h"
 #include "calculator.h"
@@ -146,7 +147,7 @@ std::vector<std::string> splitCsvLine(const std::string& line) {
 }
 
 // Membaca file CSV dan menampilkannya sebagai tabel rapi di console
-void tampilkanRiwayat(bool hanyaRujukan = false) {
+void tampilkanRiwayat(bool hanyaRujukan = false, const std::string& filterNama = "") {
     std::string filename = "riwayat_pemeriksaan.csv";
     std::ifstream inFile(filename);
     if (!inFile.is_open()) {
@@ -178,6 +179,17 @@ void tampilkanRiwayat(bool hanyaRujukan = false) {
     std::vector<std::vector<std::string>> filteredRows;
     for (const auto& row : dataRows) {
         if (row.size() < 12) continue;
+
+        // Filter berdasarkan nama jika parameter filterNama tidak kosong
+        if (!filterNama.empty()) {
+            std::string n1 = filterNama;
+            std::string n2 = row[1];
+            std::transform(n1.begin(), n1.end(), n1.begin(), [](unsigned char c){ return std::tolower(c); });
+            std::transform(n2.begin(), n2.end(), n2.begin(), [](unsigned char c){ return std::tolower(c); });
+            if (n2.find(n1) == std::string::npos) {
+                continue;
+            }
+        }
         
         std::string bbu = row[7];
         std::string pbu = row[9];
@@ -302,22 +314,21 @@ int main() {
         }
     }
 
-    bool mainLoop = true;
-    while (mainLoop) {
+    bool appLoop = true;
+    while (appLoop) {
         clearScreen();
         tampilkanHeader();
         
-        std::cout << BOLD << "--- MENU UTAMA ---" << RESET << std::endl;
-        std::cout << " [1] Ukur Antropometri Baru" << std::endl;
-        std::cout << " [2] Lihat Semua Riwayat Pemeriksaan" << std::endl;
-        std::cout << " [3] Lihat Riwayat Rujukan Medis (Gawat)" << std::endl;
-        std::cout << " [4] Keluar Aplikasi" << std::endl;
+        std::cout << BOLD << "--- MENU LOGIN ---" << RESET << std::endl;
+        std::cout << " [1] Login sebagai Kader Posyandu" << std::endl;
+        std::cout << " [2] Login sebagai Ibu Balita" << std::endl;
+        std::cout << " [3] Keluar Aplikasi" << std::endl;
         std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
-        std::cout << "Pilih Menu (1-4): ";
+        std::cout << "Pilih Role (1-3): ";
         
-        int menuPilihan = 0;
-        if (!(std::cin >> menuPilihan)) {
-            std::cout << RED << "Input tidak valid! Harap pilih angka 1-4." << RESET << std::endl;
+        int rolePilihan = 0;
+        if (!(std::cin >> rolePilihan)) {
+            std::cout << RED << "Input tidak valid! Harap pilih angka 1-3." << RESET << std::endl;
             clearInput();
             std::cout << "\nTekan ENTER untuk melanjutkan...";
             std::cin.get();
@@ -325,7 +336,75 @@ int main() {
         }
         clearInput();
 
-        if (menuPilihan == 1) {
+        if (rolePilihan == 3) {
+            appLoop = false;
+            continue;
+        }
+
+        bool isKader = (rolePilihan == 1);
+        std::string filterNamaAnak = "";
+
+        if (isKader) {
+            std::string password;
+            std::cout << "Masukkan Password Kader (default: kader123): ";
+            std::getline(std::cin, password);
+            if (password != "kader123") {
+                std::cout << RED << "Password salah!" << RESET << std::endl;
+                std::cout << "\nTekan ENTER untuk kembali...";
+                std::cin.get();
+                continue;
+            }
+        } else if (rolePilihan == 2) {
+            std::cout << "Masukkan Nama Balita Anda: ";
+            std::getline(std::cin, filterNamaAnak);
+        } else {
+            std::cout << RED << "Pilihan role tidak terdaftar!" << RESET << std::endl;
+            std::cout << "\nTekan ENTER untuk melanjutkan...";
+            std::cin.get();
+            continue;
+        }
+
+        bool mainLoop = true;
+        while (mainLoop) {
+            clearScreen();
+            tampilkanHeader();
+            
+            if (isKader) {
+                std::cout << BOLD << "--- MENU UTAMA (KADER POSYANDU) ---" << RESET << std::endl;
+                std::cout << " [1] Ukur Antropometri Baru" << std::endl;
+                std::cout << " [2] Lihat Semua Riwayat Pemeriksaan" << std::endl;
+                std::cout << " [3] Lihat Riwayat Rujukan Medis (Gawat)" << std::endl;
+                std::cout << " [4] Logout" << std::endl;
+            } else {
+                std::cout << BOLD << "--- MENU UTAMA (IBU BALITA: " << filterNamaAnak << ") ---" << RESET << std::endl;
+                std::cout << " [1] Lihat Data & Riwayat Pemeriksaan Anak" << std::endl;
+                std::cout << " [2] Logout" << std::endl;
+            }
+            std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+            std::cout << "Pilih Menu: ";
+            
+            int menuPilihan = 0;
+            if (!(std::cin >> menuPilihan)) {
+                std::cout << RED << "Input tidak valid!" << RESET << std::endl;
+                clearInput();
+                std::cout << "\nTekan ENTER untuk melanjutkan...";
+                std::cin.get();
+                continue;
+            }
+            clearInput();
+
+            if (!isKader) {
+                // Mapping menu ibu balita ke logic di bawah
+                if (menuPilihan == 1) {
+                    menuPilihan = 2; // Paksa masuk ke menu Lihat Riwayat
+                } else if (menuPilihan == 2) {
+                    menuPilihan = 4; // Paksa masuk ke menu Logout
+                } else {
+                    menuPilihan = 0; // Invalid
+                }
+            }
+
+            if (menuPilihan == 1 && isKader) {
             ChildProfile child;
             std::string errMsg = "";
 
@@ -530,11 +609,11 @@ int main() {
         } 
         else if (menuPilihan == 2) {
             clearScreen();
-            tampilkanRiwayat(false);
+            tampilkanRiwayat(false, filterNamaAnak);
             std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
             std::cin.get();
         } 
-        else if (menuPilihan == 3) {
+        else if (menuPilihan == 3 && isKader) {
             clearScreen();
             tampilkanRiwayat(true);
             std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
@@ -544,10 +623,11 @@ int main() {
             mainLoop = false;
         } 
         else {
-            std::cout << RED << "Pilihan menu tidak terdaftar! Pilih 1, 2, 3, atau 4." << RESET << std::endl;
+            std::cout << RED << "Pilihan menu tidak terdaftar!" << RESET << std::endl;
             std::cout << "\nTekan ENTER untuk melanjutkan...";
             std::cin.get();
         }
+    }
     }
 
     clearScreen();
