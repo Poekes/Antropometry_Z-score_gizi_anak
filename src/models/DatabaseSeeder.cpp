@@ -56,6 +56,4 @@ void DatabaseSeeder::run(const ReferenceData& refData) {
     ZScoreResult r3BBU, r3PBTBU, r3BBH;
     ZScoreCalculator::calculateStatus(refData, child3, r3BBU, r3PBTBU, r3BBH);
     RiwayatModel::simpan(child3, r3BBU, r3PBTBU, r3BBH);
-
-    std::cout << "[INFO] Database Seeder: Data dummy berhasil ditambahkan!\n";
 }
