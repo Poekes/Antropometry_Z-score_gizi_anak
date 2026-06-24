@@ -1,7 +1,7 @@
 #ifndef APP_CONTROLLER_H
 #define APP_CONTROLLER_H
 
-#include "../models/AuthModel.h"
+#include "../models/UserModel.h"
 #include "../zscore_data.h"
 
 class AppController {
@@ -12,15 +12,6 @@ public:
 private:
     ReferenceData refData;
     UserSession currentSession;
-
-    // Tampilan Menu
-    bool showLoginScreen();
-    void showMainMenuKader();
-    void showMainMenuIbu();
-
-    // Aksi / Fitur
-    void doPengukuranBaru();
-    void doLihatRiwayat(bool hanyaRujukan);
 };
 
 #endif
