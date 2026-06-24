@@ -34,9 +34,7 @@ void AppController::run() {
     bool appLoop = true;
     while (appLoop) {
         if (!currentSession.isLoggedIn) {
-            showLoginScreen();
-            // Jika setelah login dipanggil masih belum login (karena pilih keluar)
-            if (!currentSession.isLoggedIn) {
+            if (!showLoginScreen()) {
                 appLoop = false;
             }
         } else {
@@ -52,66 +50,39 @@ void AppController::run() {
     std::cout << std::endl << BOLD << GREEN << "Terima kasih telah menggunakan aplikasi ini. Jaga kesehatan anak Indonesia!" << RESET << std::endl << std::endl;
 }
 
-void AppController::showLoginScreen() {
+bool AppController::showLoginScreen() {
     ConsoleView::clearScreen();
     ConsoleView::tampilkanHeader();
     
-    std::cout << BOLD << "--- MENU LOGIN ---" << RESET << std::endl;
-    std::cout << " [1] Login sebagai Kader Posyandu" << std::endl;
-    std::cout << " [2] Login sebagai Ibu Balita" << std::endl;
-    std::cout << " [3] Keluar Aplikasi" << std::endl;
+    std::cout << BOLD << "--- SILAKAN LOGIN ---" << RESET << std::endl;
+    std::cout << " (Ketik 'exit' pada Username untuk keluar aplikasi)" << std::endl;
     std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
-    std::cout << "Pilih Role (1-3): ";
     
-    int rolePilihan = 0;
-    if (!(std::cin >> rolePilihan)) {
-        ConsoleView::printError("Input tidak valid! Harap pilih angka 1-3.");
-        ConsoleView::clearInput();
-        std::cout << "\nTekan ENTER untuk melanjutkan...";
-        std::cin.get();
-        return;
-    }
-    ConsoleView::clearInput();
-
-    if (rolePilihan == 3) {
-        return; // Kembali ke run, loop akan berhenti
-    }
-
     std::string username, password;
+    std::cout << "Username: ";
+    std::getline(std::cin, username);
 
-    if (rolePilihan == 1) {
-        std::cout << "Username Kader: ";
-        std::getline(std::cin, username);
-        std::cout << "Password (default: 123): ";
-        std::getline(std::cin, password);
-        
-        currentSession = AuthModel::login(1, username, password);
-        if (!currentSession.isLoggedIn) {
-            ConsoleView::printError("Username atau password Kader salah!");
-            std::cout << "\nTekan ENTER untuk kembali...";
-            std::cin.get();
-        }
-    } else if (rolePilihan == 2) {
-        std::cout << "Username Ibu (contoh: ibu_budi / ibu_siti): ";
-        std::getline(std::cin, username);
-        std::cout << "Password (default: 123): ";
-        std::getline(std::cin, password);
+    if (username == "exit") {
+        return false;
+    }
 
-        currentSession = AuthModel::login(2, username, password);
-        if (!currentSession.isLoggedIn) {
-            ConsoleView::printError("Username atau password Ibu salah!");
-            std::cout << "\nTekan ENTER untuk kembali...";
-            std::cin.get();
-        } else {
-            ConsoleView::printSuccess("Selamat datang Ibu dari " + currentSession.childName);
-            std::cout << "\nTekan ENTER untuk melanjutkan...";
-            std::cin.get();
-        }
-    } else {
-        ConsoleView::printError("Pilihan role tidak terdaftar!");
+    std::cout << "Password: ";
+    std::getline(std::cin, password);
+
+    currentSession = AuthModel::login(username, password);
+    if (!currentSession.isLoggedIn) {
+        ConsoleView::printError("Username atau password salah!");
+        std::cout << "\nTekan ENTER untuk kembali...";
+        std::cin.get();
+        return true;
+    } 
+
+    if (currentSession.role == 2) {
+        ConsoleView::printSuccess("Selamat datang Ibu dari " + currentSession.childName);
         std::cout << "\nTekan ENTER untuk melanjutkan...";
         std::cin.get();
     }
+    return true;
 }
 
 void AppController::showMainMenuKader() {
