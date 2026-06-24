@@ -1,10 +1,28 @@
 #include "DatabaseSeeder.h"
 #include "RiwayatModel.h"
+#include "UserModel.h"
 #include "../calculator.h"
 #include <fstream>
 #include <iostream>
 
 void DatabaseSeeder::run(const ReferenceData& refData) {
+    // Daftarkan akun default jika belum ada
+    if (!UserModel::userExists("kader")) {
+        UserModel::registerUser(1, "kader", "123");
+    }
+    if (!UserModel::userExists("ibu_budi")) {
+        UserModel::registerUser(2, "ibu_budi", "123");
+        UserModel::linkIbuToAnak("ibu_budi", "Budi");
+    }
+    if (!UserModel::userExists("ibu_siti")) {
+        UserModel::registerUser(2, "ibu_siti", "123");
+        UserModel::linkIbuToAnak("ibu_siti", "Siti");
+    }
+    if (!UserModel::userExists("ibu_andi")) {
+        UserModel::registerUser(2, "ibu_andi", "123");
+        UserModel::linkIbuToAnak("ibu_andi", "Andi");
+    }
+
     std::string filename = "riwayat_pemeriksaan.csv";
     
     // Periksa apakah file sudah ada dan tidak kosong
