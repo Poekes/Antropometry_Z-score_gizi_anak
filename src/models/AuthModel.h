@@ -13,7 +13,7 @@ struct UserSession {
 class AuthModel {
 public:
     // Fungsi untuk verifikasi login
-    static UserSession login(int role, const std::string& username, const std::string& password);
+    static UserSession login(const std::string& username, const std::string& password);
 };
 
 #endif
