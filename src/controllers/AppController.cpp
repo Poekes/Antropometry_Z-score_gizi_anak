@@ -161,48 +161,96 @@ void AppController::doPengukuranBaru() {
     ChildProfile child;
     std::string errMsg = "";
 
-    // 1. Input Nama
+    // Pemilihan Balita
     while (true) {
         ConsoleView::clearScreen();
         ConsoleView::tampilkanHeader();
         std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
+        std::cout << "Pilih Balita yang akan diukur:" << std::endl;
+        std::cout << " [1] Budi (Laki-laki)" << std::endl;
+        std::cout << " [2] Siti (Perempuan)" << std::endl;
+        std::cout << " [3] Andi (Laki-laki)" << std::endl;
+        std::cout << " [4] Balita Lainnya (Input Manual)" << std::endl;
         if (!errMsg.empty()) {
-            ConsoleView::printError(errMsg);
             std::cout << std::endl;
+            ConsoleView::printError(errMsg);
         }
+        std::cout << "\nPilihan (1-4): ";
         
-        std::cout << "Masukkan Nama Balita: ";
-        std::getline(std::cin >> std::ws, child.nama);
-        if (!child.nama.empty()) {
-            errMsg = "";
-            break;
+        int balitaPilihan = 0;
+        if (std::cin >> balitaPilihan) {
+            ConsoleView::clearInput();
+            if (balitaPilihan == 1) {
+                child.nama = "Budi";
+                child.jenis_kelamin = 'L';
+                errMsg = "";
+                break;
+            } else if (balitaPilihan == 2) {
+                child.nama = "Siti";
+                child.jenis_kelamin = 'P';
+                errMsg = "";
+                break;
+            } else if (balitaPilihan == 3) {
+                child.nama = "Andi";
+                child.jenis_kelamin = 'L';
+                errMsg = "";
+                break;
+            } else if (balitaPilihan == 4) {
+                errMsg = "";
+                break;
+            } else {
+                errMsg = "Pilihan tidak valid! Harap pilih angka 1-4.";
+            }
+        } else {
+            errMsg = "Input tidak valid! Harap masukkan angka.";
+            ConsoleView::clearInput();
         }
-        errMsg = "Nama tidak boleh kosong!";
     }
 
-    // 2. Input Jenis Kelamin
-    while (true) {
-        ConsoleView::clearScreen();
-        ConsoleView::tampilkanHeader();
-        std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
-        std::cout << "  - Nama Balita    : " << child.nama << std::endl;
-        if (!errMsg.empty()) {
-            std::cout << std::endl;
-            ConsoleView::printError(errMsg);
+    if (child.nama.empty()) {
+        // 1. Input Nama
+        while (true) {
+            ConsoleView::clearScreen();
+            ConsoleView::tampilkanHeader();
+            std::cout << BOLD << "--- FORM INPUT DATA BALITA (MANUAL) ---" << RESET << std::endl << std::endl;
+            if (!errMsg.empty()) {
+                ConsoleView::printError(errMsg);
+                std::cout << std::endl;
+            }
+            
+            std::cout << "Masukkan Nama Balita: ";
+            std::getline(std::cin >> std::ws, child.nama);
+            if (!child.nama.empty()) {
+                errMsg = "";
+                break;
+            }
+            errMsg = "Nama tidak boleh kosong!";
         }
-        std::cout << std::endl;
 
-        std::cout << "Masukkan Jenis Kelamin (L = Laki-laki, P = Perempuan): ";
-        char jk;
-        std::cin >> jk;
-        jk = std::toupper(static_cast<unsigned char>(jk));
-        if (jk == 'L' || jk == 'P') {
-            child.jenis_kelamin = jk;
-            errMsg = "";
-            break;
+        // 2. Input Jenis Kelamin
+        while (true) {
+            ConsoleView::clearScreen();
+            ConsoleView::tampilkanHeader();
+            std::cout << BOLD << "--- FORM INPUT DATA BALITA (MANUAL) ---" << RESET << std::endl << std::endl;
+            std::cout << "  - Nama Balita    : " << child.nama << std::endl;
+            if (!errMsg.empty()) {
+                std::cout << std::endl;
+                ConsoleView::printError(errMsg);
+            }
+            std::cout << std::endl;
+
+            std::cout << "Masukkan Jenis Kelamin (L = Laki-laki, P = Perempuan): ";
+            char jk;
+            std::cin >> jk;
+            jk = std::toupper(static_cast<unsigned char>(jk));
+            if (jk == 'L' || jk == 'P') {
+                child.jenis_kelamin = jk;
+                errMsg = "";
+                break;
+            }
+            errMsg = "Input tidak valid! Harap masukkan 'L' atau 'P'.";
+            ConsoleView::clearInput();
         }
-        errMsg = "Input tidak valid! Harap masukkan 'L' atau 'P'.";
-        ConsoleView::clearInput();
     }
 
     // 3. Input Umur
