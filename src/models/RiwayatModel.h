@@ -16,6 +16,9 @@ public:
     // Mendapatkan riwayat yang sudah difilter berdasarkan rujukan dan/atau nama anak
     static std::vector<std::vector<std::string>> getFilteredRiwayat(bool hanyaRujukan, const std::string& filterNama);
 
+    // Mendapatkan daftar balita unik dari riwayat pemeriksaan
+    static std::vector<ChildProfile> getUniqueChildren();
+
 private:
     static std::vector<std::string> splitCsvLine(const std::string& line);
 };
