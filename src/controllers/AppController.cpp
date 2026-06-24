@@ -167,39 +167,34 @@ void AppController::doPengukuranBaru() {
         ConsoleView::tampilkanHeader();
         std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
         std::cout << "Pilih Balita yang akan diukur:" << std::endl;
-        std::cout << " [1] Budi (Laki-laki)" << std::endl;
-        std::cout << " [2] Siti (Perempuan)" << std::endl;
-        std::cout << " [3] Andi (Laki-laki)" << std::endl;
-        std::cout << " [4] Balita Lainnya (Input Manual)" << std::endl;
+        
+        std::vector<ChildProfile> children = RiwayatModel::getUniqueChildren();
+        int idx = 1;
+        for (const auto& c : children) {
+            std::cout << " [" << idx << "] " << c.nama << " (" << (c.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << ")" << std::endl;
+            idx++;
+        }
+        std::cout << " [" << idx << "] Balita Lainnya (Input Manual)" << std::endl;
+        
         if (!errMsg.empty()) {
             std::cout << std::endl;
             ConsoleView::printError(errMsg);
         }
-        std::cout << "\nPilihan (1-4): ";
+        std::cout << "\nPilihan (1-" << idx << "): ";
         
         int balitaPilihan = 0;
         if (std::cin >> balitaPilihan) {
             ConsoleView::clearInput();
-            if (balitaPilihan == 1) {
-                child.nama = "Budi";
-                child.jenis_kelamin = 'L';
+            if (balitaPilihan >= 1 && balitaPilihan < idx) {
+                child.nama = children[balitaPilihan - 1].nama;
+                child.jenis_kelamin = children[balitaPilihan - 1].jenis_kelamin;
                 errMsg = "";
                 break;
-            } else if (balitaPilihan == 2) {
-                child.nama = "Siti";
-                child.jenis_kelamin = 'P';
-                errMsg = "";
-                break;
-            } else if (balitaPilihan == 3) {
-                child.nama = "Andi";
-                child.jenis_kelamin = 'L';
-                errMsg = "";
-                break;
-            } else if (balitaPilihan == 4) {
+            } else if (balitaPilihan == idx) {
                 errMsg = "";
                 break;
             } else {
-                errMsg = "Pilihan tidak valid! Harap pilih angka 1-4.";
+                errMsg = "Pilihan tidak valid! Harap pilih angka 1-" + std::to_string(idx) + ".";
             }
         } else {
             errMsg = "Input tidak valid! Harap masukkan angka.";
