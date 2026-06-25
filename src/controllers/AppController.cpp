@@ -2,7 +2,9 @@
 #include "AuthController.h"
 #include "KaderController.h"
 #include "IbuController.h"
-#include "../models/DatabaseSeeder.h"
+#include "../database/KaderSeeder.h"
+#include "../database/IbuSeeder.h"
+#include "../database/ChildSeeder.h"
 #include "../views/ConsoleView.h"
 #include "../json_parser.h"
 #include <iostream>
@@ -29,8 +31,9 @@ void AppController::run() {
         }
     }
 
-    // Jalankan Seeder
-    DatabaseSeeder::run(refData);
+    KaderSeeder::seed();
+    IbuSeeder::seed();
+    ChildSeeder::seed(refData);
 
     bool appLoop = true;
     while (appLoop) {
