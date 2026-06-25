@@ -5,5 +5,5 @@ antropometri_gizi_z_score
 *.exe
 *.o
 riwayat_pemeriksaan.csv
-
-
+data_pengguna.csv
+data_ibu_anak.csv
