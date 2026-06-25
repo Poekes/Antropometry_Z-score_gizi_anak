@@ -28,7 +28,7 @@ Aplikasi ini dibuat menggunakan bahasa pemrograman C++. Anda memerlukan compiler
 ### Kompilasi (Compile)
 Jalankan perintah berikut di terminal/command prompt Anda:
 ```bash
-g++ -std=c++11 -o antropometri_gizi_z_score src/main.cpp src/json_parser.cpp src/calculator.cpp
+g++ -std=c++11 -o antropometri_gizi_z_score src/main.cpp src/json_parser.cpp src/calculator.cpp src/controllers/*.cpp src/models/*.cpp src/database/*.cpp src/views/*.cpp
 ```
 
 ### Menjalankan Aplikasi (Run)
