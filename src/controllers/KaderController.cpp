@@ -24,7 +24,7 @@ void KaderController::showMainMenu() {
     std::cout << " [1] Ukur Antropometri Baru" << std::endl;
     std::cout << " [2] Lihat Semua Riwayat Pemeriksaan" << std::endl;
     std::cout << " [3] Lihat Riwayat Rujukan Medis (Gawat)" << std::endl;
-    std::cout << " [4] Registrasi Ibu & Anak Baru" << std::endl;
+    std::cout << " [4] Registrasi Ibu Balita Baru" << std::endl;
     std::cout << " [5] Tambah Anak untuk Ibu Terdaftar" << std::endl;
     std::cout << " [6] Logout" << std::endl;
     std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
@@ -47,7 +47,7 @@ void KaderController::showMainMenu() {
     } else if (menuPilihan == 3) {
         doLihatRiwayat(true);
     } else if (menuPilihan == 4) {
-        doTambahIbuDanAnak();
+        doTambahIbuBalita();
     } else if (menuPilihan == 5) {
         doTambahAnakKeIbu();
     } else if (menuPilihan == 6) {
@@ -59,12 +59,12 @@ void KaderController::showMainMenu() {
     }
 }
 
-void KaderController::doTambahIbuDanAnak() {
+void KaderController::doTambahIbuBalita() {
     ConsoleView::clearScreen();
     ConsoleView::tampilkanHeader();
-    std::cout << BOLD << "--- REGISTRASI IBU & ANAK BARU ---" << RESET << std::endl << std::endl;
+    std::cout << BOLD << "--- REGISTRASI IBU BALITA BARU ---" << RESET << std::endl << std::endl;
     
-    std::string username, password, namaAnak;
+    std::string username, password;
     std::cout << "Masukkan Username Ibu baru: ";
     std::getline(std::cin >> std::ws, username);
     
@@ -78,14 +78,10 @@ void KaderController::doTambahIbuDanAnak() {
     std::cout << "Masukkan Password: ";
     std::getline(std::cin, password);
     
-    std::cout << "Masukkan Nama Anak Pertama: ";
-    std::getline(std::cin, namaAnak);
-    
     if (UserModel::registerUser(2, username, password)) {
-        UserModel::linkIbuToAnak(username, namaAnak);
-        ConsoleView::printSuccess("Ibu '" + username + "' beserta anak '" + namaAnak + "' berhasil didaftarkan!");
+        ConsoleView::printSuccess("Ibu Balita '" + username + "' berhasil didaftarkan!");
     } else {
-        ConsoleView::printError("Gagal mendaftarkan pengguna baru.");
+        ConsoleView::printError("Gagal mendaftarkan Ibu Balita baru.");
     }
     
     std::cout << "\nTekan ENTER untuk kembali...";
