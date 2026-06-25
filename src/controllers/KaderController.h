@@ -16,7 +16,7 @@ private:
     void showMainMenu();
     void doPengukuranBaru();
     void doLihatRiwayat(bool hanyaRujukan);
-    void doTambahIbuDanAnak();
+    void doTambahIbuBalita();
     void doTambahAnakKeIbu();
 };
 
