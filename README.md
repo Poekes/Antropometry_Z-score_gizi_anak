@@ -25,22 +25,17 @@ Sistem ini melakukan perhitungan berdasarkan **[Standar Antropometri Anak Kemenk
 
 Aplikasi ini dibuat menggunakan bahasa pemrograman C++. Anda memerlukan compiler C++ (seperti `g++`) untuk mengompilasi kode program ini.
 
-### Kompilasi (Compile)
-Jalankan perintah berikut di terminal/command prompt Anda:
+### Kompilasi (Compile) & Instalasi
+Jalankan script instalasi berikut di terminal Anda untuk mengompilasi program:
 ```bash
-g++ -std=c++11 -o antropometri_gizi_z_score src/main.cpp src/json_parser.cpp src/calculator.cpp src/controllers/*.cpp src/models/*.cpp src/database/*.cpp src/views/*.cpp
+./install.sh
 ```
 
 ### Menjalankan Aplikasi (Run)
 Setelah berhasil dikompilasi, jalankan program:
-* **Linux/macOS**:
-  ```bash
-  ./antropometri_gizi_z_score
-  ```
-* **Windows**:
-  ```cmd
-  antropometri_gizi_z_score.exe
-  ```
+```bash
+./antropometri_gizi_z_score
+```
 
 ---
 
