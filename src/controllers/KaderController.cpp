@@ -108,7 +108,8 @@ void KaderController::doTambahAnakKeIbu() {
     std::cout << "Masukkan Nama Anak Baru: ";
     std::getline(std::cin, namaAnak);
     
-    if (UserModel::linkIbuToAnak(username, namaAnak)) {
+    int ibuId = UserModel::getUserIdByUsername(username);
+    if (UserModel::linkIbuToAnak(ibuId, namaAnak)) {
         ConsoleView::printSuccess("Anak '" + namaAnak + "' berhasil ditambahkan ke Ibu '" + username + "'!");
     } else {
         ConsoleView::printError("Gagal menambahkan data anak.");
