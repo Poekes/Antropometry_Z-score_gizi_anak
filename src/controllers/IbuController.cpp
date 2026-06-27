@@ -1,6 +1,7 @@
 #include "IbuController.h"
 #include "../views/ConsoleView.h"
 #include "../models/RiwayatModel.h"
+#include "../models/FoodRecommendation.h"
 #include <iostream>
 #include <algorithm>
 
@@ -26,8 +27,14 @@ void IbuController::showMainMenu() {
             auto latest = riwayat.back();
             std::cout << "\n" << CYAN << " Informasi Status Gizi Terakhir (" << latest[0] << "):" << RESET << std::endl;
             std::cout << " - Berat/Umur (BB/U)     : " << latest[7] << std::endl;
+            std::cout << "   -> Rekomendasi: " << FoodRecommendation::getRekomendasiBBU(latest[7]) << std::endl;
+            
             std::cout << " - Tinggi/Umur (TB/U)    : " << latest[9] << std::endl;
+            std::cout << "   -> Rekomendasi: " << FoodRecommendation::getRekomendasiTBU(latest[9]) << std::endl;
+            
             std::cout << " - Berat/Tinggi (BB/TB)  : " << latest[11] << std::endl;
+            std::cout << "   -> Rekomendasi: " << FoodRecommendation::getRekomendasiBBTB(latest[11]) << std::endl;
+            
             if (latest.size() >= 13) {
                 std::cout << " - Rekomendasi Rujukan   : " << (latest[12] == "RUJUK" ? (RED + "RUJUK KELAINAN/GIZI BURUK" + RESET) : (GREEN + "TIDAK (Normal)" + RESET)) << std::endl;
             }
