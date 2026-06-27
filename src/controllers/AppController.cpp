@@ -10,7 +10,7 @@
 #include <iostream>
 
 AppController::AppController() {
-    currentSession = {false, 0, "", ""};
+    currentSession = {false, 0, 0, "", ""};
 }
 
 void AppController::run() {
