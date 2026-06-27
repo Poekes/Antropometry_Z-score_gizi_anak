@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+#include "../models/FoodRecommendation.h"
 
 KaderController::KaderController(UserSession& session, ReferenceData& refData) 
     : currentSession(session), refData(refData) {}
@@ -330,7 +331,8 @@ void KaderController::doPengukuranBaru() {
     std::cout << BOLD << "1. Berat Badan menurut Umur (BB/U)" << RESET << std::endl;
     std::cout << "   - Nilai Z-Score : " << std::fixed << std::setprecision(2) << resBBU.z_score << " SD" << std::endl;
     std::cout << "   - Status Gizi   : " << colorBBU << BOLD << "[" << resBBU.nama_status << "]" << RESET << std::endl;
-    std::cout << "   - Penjelasan    : " << resBBU.penjelasan << std::endl << std::endl;
+    std::cout << "   - Penjelasan    : " << resBBU.penjelasan << std::endl;
+    std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiBBU(resBBU.nama_status) << std::endl << std::endl;
 
     // Indikator 2: PB/U atau TB/U
     std::string labelPBTBU = (child.umur_bulan <= 24) ? "Panjang Badan menurut Umur (PB/U)" : "Tinggi Badan menurut Umur (TB/U)";
@@ -338,7 +340,8 @@ void KaderController::doPengukuranBaru() {
     std::cout << BOLD << "2. " << labelPBTBU << RESET << std::endl;
     std::cout << "   - Nilai Z-Score : " << resPBTBU.z_score << " SD" << std::endl;
     std::cout << "   - Status Gizi   : " << colorPBTBU << BOLD << "[" << resPBTBU.nama_status << "]" << RESET << std::endl;
-    std::cout << "   - Penjelasan    : " << resPBTBU.penjelasan << std::endl << std::endl;
+    std::cout << "   - Penjelasan    : " << resPBTBU.penjelasan << std::endl;
+    std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiTBU(resPBTBU.nama_status) << std::endl << std::endl;
 
     // Indikator 3: BB/PB atau BB/TB
     std::string labelBBH = (child.umur_bulan <= 24) ? "Berat Badan menurut Panjang Badan (BB/PB)" : "Berat Badan menurut Tinggi Badan (BB/TB)";
@@ -350,7 +353,8 @@ void KaderController::doPengukuranBaru() {
         std::cout << "   - Nilai Z-Score : N/A" << std::endl;
     }
     std::cout << "   - Status Gizi   : " << colorBBH << BOLD << "[" << resBBH.nama_status << "]" << RESET << std::endl;
-    std::cout << "   - Penjelasan    : " << resBBH.penjelasan << std::endl << std::endl;
+    std::cout << "   - Penjelasan    : " << resBBH.penjelasan << std::endl;
+    std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiBBTB(resBBH.nama_status) << std::endl << std::endl;
 
     std::cout << BLUE << "=====================================================================" << RESET << std::endl;
 
