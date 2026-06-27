@@ -14,6 +14,7 @@ UserSession UserModel::login(const std::string& username, const std::string& pas
     
     std::string line;
     while (std::getline(inFile, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
         if (line.empty()) continue;
         std::stringstream ss(line);
         std::string tId, tRole, tUser, tPass;
@@ -51,6 +52,7 @@ bool UserModel::registerUser(int role, const std::string& username, const std::s
     if (inFile.is_open()) {
         std::string line;
         while (std::getline(inFile, line)) {
+            if (!line.empty() && line.back() == '\r') line.pop_back();
             if (line.empty()) continue;
             std::stringstream ss(line);
             std::string tId;
@@ -90,6 +92,7 @@ std::vector<std::string> UserModel::getAnakByIbu(int ibuId) {
     std::string line;
     std::string strIbuId = std::to_string(ibuId);
     while (std::getline(inFile, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
         if (line.empty()) continue;
         std::stringstream ss(line);
         std::string tUser, tAnak;
@@ -113,6 +116,7 @@ bool UserModel::userExists(const std::string& username) {
     
     std::string line;
     while (std::getline(inFile, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
         if (line.empty()) continue;
         std::stringstream ss(line);
         std::string tId, tRole, tUser;
@@ -135,6 +139,7 @@ int UserModel::getUserIdByUsername(const std::string& username) {
     
     std::string line;
     while (std::getline(inFile, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
         if (line.empty()) continue;
         std::stringstream ss(line);
         std::string tId, tRole, tUser;
