@@ -28,7 +28,7 @@ void KaderController::showMainMenu() {
     std::cout << " [4] Registrasi Ibu Balita Baru" << std::endl;
     std::cout << " [5] Tambah Anak untuk Ibu Terdaftar" << std::endl;
     std::cout << " [6] Logout" << std::endl;
-    std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << "Pilih Menu: ";
     
     int menuPilihan = 0;
@@ -311,9 +311,9 @@ void KaderController::doPengukuranBaru() {
 
     // Tampilkan Hasil Diagnosis
     ConsoleView::clearScreen();
-    std::cout << BLUE << "=====================================================================" << RESET << std::endl;
+    std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
     std::cout << BOLD << BLUE << "                    HASIL DIAGNOSIS STATUS GIZI                      " << RESET << std::endl;
-    std::cout << BLUE << "=====================================================================" << RESET << std::endl;
+    std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
     
     std::cout << BOLD << "PROFIL BALITA:" << RESET << std::endl;
     std::cout << "  - Nama Balita    : " << child.nama << std::endl;
@@ -323,7 +323,7 @@ void KaderController::doPengukuranBaru() {
     std::cout << "  - Berat Badan    : " << std::fixed << std::setprecision(1) << child.berat_kg << " kg" << std::endl;
     std::cout << "  - Tinggi/Panjang : " << child.tinggi_cm << " cm" 
               << " (Dibulatkan ke: " << (std::round(child.tinggi_cm * 2.0) / 2.0) << " cm)" << std::endl;
-    std::cout << BLUE << "---------------------------------------------------------------------" << RESET << std::endl << std::endl;
+    std::cout << BLUE << ConsoleView::LINE_DASH << RESET << std::endl << std::endl;
 
     std::cout << BOLD << "HASIL DIAGNOSIS 3 INDIKATOR UTAMA:" << RESET << std::endl << std::endl;
 
@@ -357,18 +357,18 @@ void KaderController::doPengukuranBaru() {
     std::cout << "   - Penjelasan    : " << resBBH.penjelasan << std::endl;
     std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiBBTB(resBBH.nama_status) << std::endl << std::endl;
 
-    std::cout << BLUE << "=====================================================================" << RESET << std::endl;
+    std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
 
     if (ZScoreCalculator::isCritical(resBBU.status) || 
         ZScoreCalculator::isCritical(resPBTBU.status) || 
         ZScoreCalculator::isCritical(resBBH.status)) {
         
         std::string tindakanRujukan = ZScoreCalculator::getReferralAction(resBBU, resPBTBU, resBBH);
-        std::cout << RED << "=====================================================================" << RESET << std::endl;
+        std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl;
         std::cout << RED << BOLD << "            ⚠️  REKOMENDASI RUJUKAN & TINDAKAN MEDIS GAWAT  ⚠️" << RESET << std::endl;
-        std::cout << RED << "=====================================================================" << RESET << std::endl;
+        std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl;
         std::cout << tindakanRujukan << std::endl;
-        std::cout << RED << "=====================================================================" << RESET << std::endl << std::endl;
+        std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl << std::endl;
     }
     
     std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
