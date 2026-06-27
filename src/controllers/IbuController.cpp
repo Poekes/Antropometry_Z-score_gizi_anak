@@ -3,6 +3,7 @@
 #include "../models/RiwayatModel.h"
 #include "../models/FoodRecommendation.h"
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 
 IbuController::IbuController(UserSession& session) : currentSession(session) {}
@@ -25,18 +26,26 @@ void IbuController::showMainMenu() {
         std::vector<std::vector<std::string>> riwayat = RiwayatModel::getFilteredRiwayat(false, currentSession.childName);
         if (!riwayat.empty()) {
             auto latest = riwayat.back();
-            std::cout << "\n" << CYAN << " Informasi Status Gizi Terakhir (" << latest[0] << "):" << RESET << std::endl;
-            std::cout << " - Berat/Umur (BB/U)     : " << latest[7] << std::endl;
-            std::cout << "   -> Rekomendasi: " << FoodRecommendation::getRekomendasiBBU(latest[7]) << std::endl;
+            std::cout << "\n" << BOLD << CYAN << " === INFORMASI STATUS GIZI TERAKHIR (" << latest[0] << ") ===" << RESET << std::endl;
+            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+            std::cout << " " << BOLD << std::left << std::setw(22) << "Indikator" << " | " << "Status & Rekomendasi" << RESET << std::endl;
+            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
             
-            std::cout << " - Tinggi/Umur (TB/U)    : " << latest[9] << std::endl;
-            std::cout << "   -> Rekomendasi: " << FoodRecommendation::getRekomendasiTBU(latest[9]) << std::endl;
+            std::cout << " " << std::left << std::setw(22) << "Berat/Umur (BB/U)" << " | " << BOLD << latest[7] << RESET << std::endl;
+            std::cout << " " << std::setw(22) << "" << " | -> " << FoodRecommendation::getRekomendasiBBU(latest[7]) << std::endl;
+            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
             
-            std::cout << " - Berat/Tinggi (BB/TB)  : " << latest[11] << std::endl;
-            std::cout << "   -> Rekomendasi: " << FoodRecommendation::getRekomendasiBBTB(latest[11]) << std::endl;
+            std::cout << " " << std::left << std::setw(22) << "Tinggi/Umur (TB/U)" << " | " << BOLD << latest[9] << RESET << std::endl;
+            std::cout << " " << std::setw(22) << "" << " | -> " << FoodRecommendation::getRekomendasiTBU(latest[9]) << std::endl;
+            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+            
+            std::cout << " " << std::left << std::setw(22) << "Berat/Tinggi (BB/TB)" << " | " << BOLD << latest[11] << RESET << std::endl;
+            std::cout << " " << std::setw(22) << "" << " | -> " << FoodRecommendation::getRekomendasiBBTB(latest[11]) << std::endl;
+            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
             
             if (latest.size() >= 13) {
-                std::cout << " - Rekomendasi Rujukan   : " << (latest[12] == "RUJUK" ? (RED + "RUJUK KELAINAN/GIZI BURUK" + RESET) : (GREEN + "TIDAK (Normal)" + RESET)) << std::endl;
+                std::cout << " " << std::left << std::setw(22) << "Tindakan Medis" << " | " << (latest[12] == "RUJUK" ? (RED + BOLD + "RUJUK KELAINAN/GIZI BURUK" + RESET) : (GREEN + "TIDAK (Normal)" + RESET)) << std::endl;
+                std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
             }
         } else {
             std::cout << YELLOW << " [Belum ada riwayat pemeriksaan]" << RESET << std::endl;
