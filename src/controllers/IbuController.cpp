@@ -74,7 +74,7 @@ void IbuController::showMainMenu() {
 }
 
 void IbuController::doPilihAnak() {
-    std::vector<std::string> anakList = UserModel::getAnakByIbu(currentSession.username);
+    std::vector<std::string> anakList = UserModel::getAnakByIbu(currentSession.userId);
     if (anakList.empty()) {
         ConsoleView::clearScreen();
         ConsoleView::tampilkanHeader();
