@@ -13,6 +13,9 @@ const std::string BLUE    = "\033[34m";
 const std::string CYAN    = "\033[36m";
 const std::string MAGENTA = "\033[35m";
 
+const std::string ConsoleView::LINE_EQ = std::string(140, '=');
+const std::string ConsoleView::LINE_DASH = std::string(140, '-');
+
 void ConsoleView::clearInput() {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -52,12 +55,12 @@ std::string ConsoleView::getStatusColor(StatusGizi status) {
 }
 
 void ConsoleView::tampilkanHeader() {
-    std::cout << MAGENTA << "=====================================================================" << RESET << std::endl;
+    std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
     std::cout << BOLD << CYAN << "          DETEKSI GIZI ANAK BERDASARKAN Z-SCORE         " << RESET << std::endl;
-    std::cout << MAGENTA << "=====================================================================" << RESET << std::endl;
+    std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
     std::cout << " Alat bantu cepat untuk Kader Posyandu & Bidan Desa dalam menentukan" << std::endl;
     std::cout << " status gizi balita usia 0 hingga 60 bulan secara akurat." << std::endl;
-    std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << MAGENTA << LINE_DASH << RESET << std::endl;
 }
 
 void ConsoleView::printError(const std::string& errorMsg) {
@@ -79,13 +82,13 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
     }
     
     std::cout << BOLD << CYAN;
-    std::cout << "=============================================================================================================================" << std::endl;
+    std::cout << LINE_EQ << std::endl;
     if (hanyaRujukan) {
         std::cout << "                                         RIWAYAT BALITA DIRUJUK (KONDISI GAWAT)                                              " << std::endl;
     } else {
         std::cout << "                                              RIWAYAT PEMERIKSAAN GIZI BALITA                                                " << std::endl;
     }
-    std::cout << "=============================================================================================================================" << RESET << std::endl;
+    std::cout << LINE_EQ << RESET << std::endl;
     std::cout << BOLD;
     std::cout << "| " << std::left << std::setw(3) << "No"
               << " | " << std::left << std::setw(16) << "Waktu Periksa"
@@ -99,7 +102,7 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
               << " | " << std::left << std::setw(15) << "Status BB/PB-TB"
               << " | " << std::left << std::setw(7) << "Rujukan"
               << " | " << RESET << std::endl;
-    std::cout << CYAN << "-----------------------------------------------------------------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << CYAN << LINE_DASH << RESET << std::endl;
     
     int no = 1;
     for (const auto& row : dataRows) {
@@ -146,5 +149,5 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
                   << " |" << std::endl;
     }
     
-    std::cout << CYAN << "=============================================================================================================================" << RESET << std::endl;
+    std::cout << CYAN << LINE_EQ << RESET << std::endl;
 }

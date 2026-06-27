@@ -26,6 +26,9 @@ public:
     
     static void printError(const std::string& errorMsg);
     static void printSuccess(const std::string& successMsg);
+    
+    static const std::string LINE_EQ;
+    static const std::string LINE_DASH;
 };
 
 #endif
