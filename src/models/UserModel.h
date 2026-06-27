@@ -6,6 +6,7 @@
 
 struct UserSession {
     bool isLoggedIn;
+    int userId; // ID unik pengguna
     int role; // 1 = Kader Posyandu, 2 = Ibu Balita
     std::string username;
     std::string childName; // Balita yang sedang dipilih
@@ -19,14 +20,17 @@ public:
     // Mendaftarkan pengguna (Kader atau Ibu)
     static bool registerUser(int role, const std::string& username, const std::string& password);
     
-    // Menautkan nama balita ke username ibu
-    static bool linkIbuToAnak(const std::string& usernameIbu, const std::string& namaAnak);
+    // Menautkan nama balita ke ID ibu
+    static bool linkIbuToAnak(int ibuId, const std::string& namaAnak);
     
-    // Mendapatkan daftar nama anak dari seorang ibu
-    static std::vector<std::string> getAnakByIbu(const std::string& usernameIbu);
+    // Mendapatkan daftar nama anak dari ID ibu
+    static std::vector<std::string> getAnakByIbu(int ibuId);
     
     // Memeriksa apakah user ada
     static bool userExists(const std::string& username);
+
+    // Mendapatkan User ID berdasarkan username
+    static int getUserIdByUsername(const std::string& username);
 };
 
 #endif
