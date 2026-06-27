@@ -19,6 +19,23 @@ void IbuController::showMainMenu() {
     
     std::cout << BOLD << "--- MENU UTAMA (IBU BALITA: " << currentSession.username << ") ---" << RESET << std::endl;
     std::cout << " Balita Aktif saat ini: " << (currentSession.childName.empty() ? "[Belum Dipilih]" : currentSession.childName) << std::endl;
+    
+    if (!currentSession.childName.empty()) {
+        std::vector<std::vector<std::string>> riwayat = RiwayatModel::getFilteredRiwayat(false, currentSession.childName);
+        if (!riwayat.empty()) {
+            auto latest = riwayat.back();
+            std::cout << "\n" << CYAN << " Informasi Status Gizi Terakhir (" << latest[0] << "):" << RESET << std::endl;
+            std::cout << " - Berat/Umur (BB/U)     : " << latest[7] << std::endl;
+            std::cout << " - Tinggi/Umur (TB/U)    : " << latest[9] << std::endl;
+            std::cout << " - Berat/Tinggi (BB/TB)  : " << latest[11] << std::endl;
+            if (latest.size() >= 13) {
+                std::cout << " - Rekomendasi Rujukan   : " << (latest[12] == "RUJUK" ? (RED + "RUJUK KELAINAN/GIZI BURUK" + RESET) : (GREEN + "TIDAK (Normal)" + RESET)) << std::endl;
+            }
+        } else {
+            std::cout << YELLOW << " [Belum ada riwayat pemeriksaan]" << RESET << std::endl;
+        }
+    }
+    
     std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
     std::cout << " [1] Lihat Data & Riwayat Pemeriksaan Anak" << std::endl;
     std::cout << " [2] Pilih Anak Balita" << std::endl;
