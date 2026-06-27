@@ -27,36 +27,36 @@ void IbuController::showMainMenu() {
         if (!riwayat.empty()) {
             auto latest = riwayat.back();
             std::cout << "\n" << BOLD << CYAN << " === INFORMASI STATUS GIZI TERAKHIR (" << latest[0] << ") ===" << RESET << std::endl;
-            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+            std::cout << CYAN << " " << ConsoleView::LINE_DASH << RESET << std::endl;
             std::cout << " " << BOLD << std::left << std::setw(22) << "Indikator" << " | " << "Status & Rekomendasi" << RESET << std::endl;
-            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+            std::cout << CYAN << " " << ConsoleView::LINE_DASH << RESET << std::endl;
             
             std::cout << " " << std::left << std::setw(22) << "Berat/Umur (BB/U)" << " | " << BOLD << latest[7] << RESET << std::endl;
             std::cout << " " << std::setw(22) << "" << " | -> " << FoodRecommendation::getRekomendasiBBU(latest[7]) << std::endl;
-            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+            std::cout << CYAN << " " << ConsoleView::LINE_DASH << RESET << std::endl;
             
             std::cout << " " << std::left << std::setw(22) << "Tinggi/Umur (TB/U)" << " | " << BOLD << latest[9] << RESET << std::endl;
             std::cout << " " << std::setw(22) << "" << " | -> " << FoodRecommendation::getRekomendasiTBU(latest[9]) << std::endl;
-            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+            std::cout << CYAN << " " << ConsoleView::LINE_DASH << RESET << std::endl;
             
             std::cout << " " << std::left << std::setw(22) << "Berat/Tinggi (BB/TB)" << " | " << BOLD << latest[11] << RESET << std::endl;
             std::cout << " " << std::setw(22) << "" << " | -> " << FoodRecommendation::getRekomendasiBBTB(latest[11]) << std::endl;
-            std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+            std::cout << CYAN << " " << ConsoleView::LINE_DASH << RESET << std::endl;
             
             if (latest.size() >= 13) {
                 std::cout << " " << std::left << std::setw(22) << "Tindakan Medis" << " | " << (latest[12] == "RUJUK" ? (RED + BOLD + "RUJUK KELAINAN/GIZI BURUK" + RESET) : (GREEN + "TIDAK (Normal)" + RESET)) << std::endl;
-                std::cout << CYAN << " ------------------------------------------------------------------------" << RESET << std::endl;
+                std::cout << CYAN << " " << ConsoleView::LINE_DASH << RESET << std::endl;
             }
         } else {
             std::cout << YELLOW << " [Belum ada riwayat pemeriksaan]" << RESET << std::endl;
         }
     }
     
-    std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << " [1] Lihat Data & Riwayat Pemeriksaan Anak" << std::endl;
     std::cout << " [2] Pilih Anak Balita" << std::endl;
     std::cout << " [3] Logout" << std::endl;
-    std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << "Pilih Menu: ";
     
     int menuPilihan = 0;
@@ -98,12 +98,12 @@ void IbuController::doPilihAnak() {
     ConsoleView::tampilkanHeader();
     std::cout << BOLD << "--- PILIH ANAK AKTIF ---" << RESET << std::endl;
     std::cout << " Balita Aktif saat ini: " << (currentSession.childName.empty() ? "[Belum Dipilih]" : currentSession.childName) << std::endl;
-    std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
     for (size_t i = 0; i < anakList.size(); ++i) {
         std::cout << " [" << (i + 1) << "] " << anakList[i] << std::endl;
     }
     std::cout << " [" << (anakList.size() + 1) << "] Kembali ke Menu Utama" << std::endl;
-    std::cout << MAGENTA << "---------------------------------------------------------------------" << RESET << std::endl;
+    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << "Pilih (1-" << (anakList.size() + 1) << "): ";
     int sel = 0;
     if (std::cin >> sel) {
