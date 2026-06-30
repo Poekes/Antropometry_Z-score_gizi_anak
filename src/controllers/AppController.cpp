@@ -46,7 +46,7 @@ void AppController::run() {
                 KaderController kaderCtrl(currentSession, refData);
                 kaderCtrl.run();
             } else if (currentSession.role == 2) {
-                IbuController ibuCtrl(currentSession);
+                IbuController ibuCtrl(currentSession, refData);
                 ibuCtrl.run();
             } else {
                 // Failsafe
