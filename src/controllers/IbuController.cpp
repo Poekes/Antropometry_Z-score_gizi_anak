@@ -32,11 +32,11 @@ void IbuController::showMainMenu() {
             std::cout << " " << BOLD << std::left << std::setw(26) << "Indikator" << " | " << "Status & Rekomendasi" << RESET << std::endl;
             std::cout << CYAN << ConsoleView::LINE_DASH << RESET << std::endl;
             
-            std::cout << " " << std::left << std::setw(26) << "Berat Badan thdp Umur" << " | " << BOLD << latest[7] << RESET << std::endl;
+            std::cout << " " << std::left << std::setw(26) << "Berat Badan (BB/U)" << " | " << BOLD << latest[7] << RESET << std::endl;
             std::cout << " " << std::setw(26) << "" << " | -> " << FoodRecommendation::getRekomendasiBBU(latest[7]) << std::endl;
             std::cout << CYAN << ConsoleView::LINE_DASH << RESET << std::endl;
             
-            std::cout << " " << std::left << std::setw(26) << "Tinggi Badan thdp Umur" << " | " << BOLD << latest[9] << RESET << std::endl;
+            std::cout << " " << std::left << std::setw(26) << "Tinggi Badan (TB/U)" << " | " << BOLD << latest[9] << RESET << std::endl;
             std::cout << " " << std::setw(26) << "" << " | -> " << FoodRecommendation::getRekomendasiTBU(latest[9]) << std::endl;
             std::cout << CYAN << ConsoleView::LINE_DASH << RESET << std::endl;
             
