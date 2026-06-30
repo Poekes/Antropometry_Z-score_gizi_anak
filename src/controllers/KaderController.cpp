@@ -158,6 +158,7 @@ void KaderController::doPengukuranBaru() {
             if (balitaPilihan >= 1 && balitaPilihan < idx) {
                 child.nama = children[balitaPilihan - 1].nama;
                 child.jenis_kelamin = children[balitaPilihan - 1].jenis_kelamin;
+                child.umur_bulan = children[balitaPilihan - 1].umur_bulan;
                 errMsg = "";
                 break;
             } else {
@@ -170,31 +171,8 @@ void KaderController::doPengukuranBaru() {
     }
 
 
-    // 3. Input Umur
-    while (true) {
-        ConsoleView::clearScreen();
-        ConsoleView::tampilkanHeader();
-        std::cout << BOLD << "--- FORM INPUT DATA BALITA ---" << RESET << std::endl << std::endl;
-        std::cout << "  - Nama Balita    : " << child.nama << std::endl;
-        std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
-        if (!errMsg.empty()) {
-            std::cout << std::endl;
-            ConsoleView::printError(errMsg);
-        }
-        std::cout << std::endl;
-
-        std::cout << "Masukkan Umur Anak (0 - 60 Bulan): ";
-        int umur;
-        if (std::cin >> umur) {
-            if (umur >= 0 && umur <= 60) {
-                child.umur_bulan = umur;
-                errMsg = "";
-                break;
-            }
-        }
-        errMsg = "Umur harus berupa angka antara 0 hingga 60 bulan!";
-        ConsoleView::clearInput();
-    }
+    // 3. Umur sudah didapatkan dari data sebelumnya (via getUniqueChildren)
+    // Tidak perlu meminta input umur lagi.
 
     // 4. Input Berat Badan
     while (true) {

@@ -149,16 +149,28 @@ std::vector<ChildProfile> RiwayatModel::getUniqueChildren() {
     auto allData = getAllRiwayat();
     
     for (const auto& row : allData) {
-        if (row.size() < 3) continue;
+        if (row.size() < 4) continue;
         std::string nama = row[1];
         
         // Cek apakah nama sudah ada dalam daftar
-        if (std::find(seenNames.begin(), seenNames.end(), nama) == seenNames.end()) {
+        auto it = std::find(seenNames.begin(), seenNames.end(), nama);
+        if (it == seenNames.end()) {
             seenNames.push_back(nama);
             ChildProfile cp;
             cp.nama = nama;
             cp.jenis_kelamin = (row[2] == "Laki-laki") ? 'L' : 'P';
+            try {
+                cp.umur_bulan = std::stoi(row[3]);
+            } catch (...) {
+                cp.umur_bulan = 0;
+            }
             children.push_back(cp);
+        } else {
+            // Jika sudah ada, update dengan data umur yang paling baru (paling bawah di CSV)
+            int index = std::distance(seenNames.begin(), it);
+            try {
+                children[index].umur_bulan = std::stoi(row[3]);
+            } catch (...) {}
         }
     }
     
