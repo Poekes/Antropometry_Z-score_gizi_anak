@@ -2,11 +2,12 @@
 #include "../views/ConsoleView.h"
 #include "../models/RiwayatModel.h"
 #include "../models/FoodRecommendation.h"
+#include "../calculator.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
 
-IbuController::IbuController(UserSession& session) : currentSession(session) {}
+IbuController::IbuController(UserSession& session, ReferenceData& refData) : currentSession(session), refData(refData) {}
 
 void IbuController::run() {
     bool ibuLoop = true;
@@ -55,7 +56,8 @@ void IbuController::showMainMenu() {
     std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << " [1] Lihat Data & Riwayat Pemeriksaan Anak" << std::endl;
     std::cout << " [2] Pilih Anak Balita" << std::endl;
-    std::cout << " [3] Logout" << std::endl;
+    std::cout << " [3] Lihat Detail Diagnosis Terakhir" << std::endl;
+    std::cout << " [4] Logout" << std::endl;
     std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << "Pilih Menu: ";
     
@@ -74,6 +76,8 @@ void IbuController::showMainMenu() {
     } else if (menuPilihan == 2) {
         doPilihAnak();
     } else if (menuPilihan == 3) {
+        doLihatDetailDiagnosis();
+    } else if (menuPilihan == 4) {
         currentSession.isLoggedIn = false;
     } else {
         ConsoleView::printError("Pilihan menu tidak terdaftar!");
@@ -134,6 +138,47 @@ void IbuController::doLihatRiwayat() {
     ConsoleView::clearScreen();
     std::vector<std::vector<std::string>> data = RiwayatModel::getFilteredRiwayat(false, currentSession.childName);
     ConsoleView::printRiwayatTable(data, false);
+    
+    std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
+    std::cin.get();
+}
+
+void IbuController::doLihatDetailDiagnosis() {
+    if (currentSession.childName.empty()) {
+        ConsoleView::printError("Silakan pilih balita terlebih dahulu!");
+        std::cout << "\nTekan ENTER untuk kembali...";
+        std::cin.get();
+        return;
+    }
+    
+    std::vector<std::vector<std::string>> riwayat = RiwayatModel::getFilteredRiwayat(false, currentSession.childName);
+    if (riwayat.empty()) {
+        ConsoleView::printError("Belum ada riwayat pemeriksaan untuk balita ini!");
+        std::cout << "\nTekan ENTER untuk kembali...";
+        std::cin.get();
+        return;
+    }
+
+    auto latest = riwayat.back();
+    ChildProfile child;
+    child.nama = latest[1];
+    child.jenis_kelamin = (latest[2] == "Laki-laki") ? 'L' : 'P';
+    
+    try {
+        child.umur_bulan = std::stoi(latest[3]);
+        child.berat_kg = std::stod(latest[4]);
+        child.tinggi_cm = std::stod(latest[5]);
+    } catch (...) {
+        ConsoleView::printError("Gagal membaca data riwayat yang tersimpan.");
+        std::cout << "\nTekan ENTER untuk kembali...";
+        std::cin.get();
+        return;
+    }
+
+    ZScoreResult resBBU, resPBTBU, resBBH;
+    ZScoreCalculator::calculateStatus(refData, child, resBBU, resPBTBU, resBBH);
+    
+    ConsoleView::printDetailDiagnosis(child, resBBU, resPBTBU, resBBH);
     
     std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
     std::cin.get();
