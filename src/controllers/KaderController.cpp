@@ -216,12 +216,7 @@ void KaderController::doPengukuranBaru() {
         }
         std::cout << std::endl;
 
-        std::cout << "Masukkan ";
-        if (child.umur_bulan <= 24) {
-            std::cout << "Panjang Badan (cm) [0-24 bulan diukur telentang]: ";
-        } else {
-            std::cout << "Tinggi Badan (cm) [25-60 bulan diukur berdiri]: ";
-        }
+        std::cout << "Masukkan Tinggi Badan (cm): ";
         
         double tinggi;
         if (std::cin >> tinggi) {
@@ -231,7 +226,7 @@ void KaderController::doPengukuranBaru() {
                 break;
             }
         }
-        errMsg = "Tinggi/panjang badan harus berupa angka positif yang valid (di bawah 200 cm)!";
+        errMsg = "Tinggi badan harus berupa angka positif yang valid (di bawah 200 cm)!";
         ConsoleView::clearInput();
     }
     ConsoleView::clearInput();
@@ -256,10 +251,9 @@ void KaderController::doPengukuranBaru() {
     std::cout << BOLD << "PROFIL BALITA:" << RESET << std::endl;
     std::cout << "  - Nama Balita    : " << child.nama << std::endl;
     std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
-    std::cout << "  - Umur / Usia    : " << child.umur_bulan << " Bulan" 
-              << " (" << (child.umur_bulan <= 24 ? "Diukur telentang / Panjang Badan" : "Diukur berdiri / Tinggi Badan") << ")" << std::endl;
+    std::cout << "  - Umur / Usia    : " << child.umur_bulan << " Bulan" << std::endl;
     std::cout << "  - Berat Badan    : " << std::fixed << std::setprecision(1) << child.berat_kg << " kg" << std::endl;
-    std::cout << "  - Tinggi/Panjang : " << child.tinggi_cm << " cm" 
+    std::cout << "  - Tinggi Badan   : " << child.tinggi_cm << " cm" 
               << " (Dibulatkan ke: " << (std::round(child.tinggi_cm * 2.0) / 2.0) << " cm)" << std::endl;
     std::cout << BLUE << ConsoleView::LINE_DASH << RESET << std::endl << std::endl;
 
@@ -273,8 +267,8 @@ void KaderController::doPengukuranBaru() {
     std::cout << "   - Penjelasan    : " << resBBU.penjelasan << std::endl;
     std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiBBU(resBBU.nama_status) << std::endl << std::endl;
 
-    // Indikator 2: PB/U atau TB/U
-    std::string labelPBTBU = (child.umur_bulan <= 24) ? "Panjang Badan menurut Umur (PB/U)" : "Tinggi Badan menurut Umur (TB/U)";
+    // Indikator 2: TB/U
+    std::string labelPBTBU = "Tinggi Badan menurut Umur (TB/U)";
     std::string colorPBTBU = ConsoleView::getStatusColor(resPBTBU.status);
     std::cout << BOLD << "2. " << labelPBTBU << RESET << std::endl;
     std::cout << "   - Nilai Z-Score : " << resPBTBU.z_score << " SD" << std::endl;
@@ -282,8 +276,8 @@ void KaderController::doPengukuranBaru() {
     std::cout << "   - Penjelasan    : " << resPBTBU.penjelasan << std::endl;
     std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiTBU(resPBTBU.nama_status) << std::endl << std::endl;
 
-    // Indikator 3: BB/PB atau BB/TB
-    std::string labelBBH = (child.umur_bulan <= 24) ? "Berat Badan menurut Panjang Badan (BB/PB)" : "Berat Badan menurut Tinggi Badan (BB/TB)";
+    // Indikator 3: BB/TB
+    std::string labelBBH = "Berat Badan menurut Tinggi Badan (BB/TB)";
     std::string colorBBH = ConsoleView::getStatusColor(resBBH.status);
     std::cout << BOLD << "3. " << labelBBH << RESET << std::endl;
     if (resBBH.status != StatusGizi::TIDAK_TERDEFINISI) {
