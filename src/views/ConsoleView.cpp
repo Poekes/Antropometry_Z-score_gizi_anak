@@ -132,20 +132,24 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
                   << " | " << std::left << std::setw(8) << row[4] + " kg"
                   << " | " << std::left << std::setw(8) << row[5] + " cm"
                   << " |" << std::endl;
+                  
+        // Label Detail
+        std::cout << "| " << std::left << std::setw(3) << "" 
+                  << " | " << BOLD << YELLOW << "Detail Status Gizi:" << RESET << std::endl;
         
         // Baris 2: BB/U & Rujukan
         std::cout << "| " << std::left << std::setw(3) << "" 
-                  << " | " << BOLD << "Berat Badan/Umur   : " << RESET << std::left << std::setw(45) << bbu
+                  << " |   " << BOLD << "Berat Badan/Umur   : " << RESET << std::left << std::setw(43) << bbu
                   << " | " << BOLD << "Tindakan Medis: " << RESET << colRujukan << std::endl;
                   
         // Baris 3: PB/U
         std::cout << "| " << std::left << std::setw(3) << "" 
-                  << " | " << BOLD << "Tinggi Badan/Umur  : " << RESET << std::left << std::setw(45) << pbu
+                  << " |   " << BOLD << "Tinggi Badan/Umur  : " << RESET << std::left << std::setw(43) << pbu
                   << " |" << std::endl;
                   
         // Baris 4: BB/PB
         std::cout << "| " << std::left << std::setw(3) << "" 
-                  << " | " << BOLD << "Berat/Tinggi Badan : " << RESET << std::left << std::setw(45) << bbh
+                  << " |   " << BOLD << "Berat/Tinggi Badan : " << RESET << std::left << std::setw(43) << bbh
                   << " |" << std::endl;
         
         std::cout << CYAN << LINE_DASH << RESET << std::endl;
