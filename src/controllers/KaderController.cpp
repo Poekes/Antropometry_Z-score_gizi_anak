@@ -245,7 +245,7 @@ void KaderController::doPengukuranBaru() {
     // Tampilkan Hasil Diagnosis
     ConsoleView::clearScreen();
     std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
-    std::cout << BOLD << BLUE << "                    HASIL DIAGNOSIS STATUS GIZI                      " << RESET << std::endl;
+    std::cout << BOLD << BLUE << std::string(70, ' ') << "HASIL DIAGNOSIS STATUS GIZI" << RESET << std::endl;
     std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
     
     std::cout << BOLD << "PROFIL BALITA:" << RESET << std::endl;
@@ -297,7 +297,7 @@ void KaderController::doPengukuranBaru() {
         
         std::string tindakanRujukan = ZScoreCalculator::getReferralAction(resBBU, resPBTBU, resBBH);
         std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl;
-        std::cout << RED << BOLD << "            ⚠️  REKOMENDASI RUJUKAN & TINDAKAN MEDIS GAWAT  ⚠️" << RESET << std::endl;
+        std::cout << RED << BOLD << std::string(59, ' ') << "⚠️  REKOMENDASI RUJUKAN & TINDAKAN MEDIS GAWAT  ⚠️" << RESET << std::endl;
         std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl;
         std::cout << tindakanRujukan << std::endl;
         std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl << std::endl;
