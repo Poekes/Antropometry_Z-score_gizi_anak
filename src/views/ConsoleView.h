@@ -24,6 +24,9 @@ public:
     // Menampilkan tabel riwayat (hasil dari RiwayatModel)
     static void printRiwayatTable(const std::vector<std::vector<std::string>>& data, bool hanyaRujukan);
     
+    // Menampilkan detail diagnosis Z-Score secara lengkap
+    static void printDetailDiagnosis(const ChildProfile& child, const ZScoreResult& resBBU, const ZScoreResult& resPBTBU, const ZScoreResult& resBBH);
+    
     static void printError(const std::string& errorMsg);
     static void printSuccess(const std::string& successMsg);
     
