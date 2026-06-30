@@ -261,14 +261,14 @@ void KaderController::doPengukuranBaru() {
 
     // Indikator 1: BB/U
     std::string colorBBU = ConsoleView::getStatusColor(resBBU.status);
-    std::cout << BOLD << "1. Berat Badan menurut Umur (BB/U)" << RESET << std::endl;
+    std::cout << BOLD << "1. Berat Badan (BB/U)" << RESET << std::endl;
     std::cout << "   - Nilai Z-Score : " << std::fixed << std::setprecision(2) << resBBU.z_score << " SD" << std::endl;
     std::cout << "   - Status Gizi   : " << colorBBU << BOLD << "[" << resBBU.nama_status << "]" << RESET << std::endl;
     std::cout << "   - Penjelasan    : " << resBBU.penjelasan << std::endl;
     std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiBBU(resBBU.nama_status) << std::endl << std::endl;
 
     // Indikator 2: TB/U
-    std::string labelPBTBU = "Tinggi Badan menurut Umur (TB/U)";
+    std::string labelPBTBU = "Tinggi Badan (TB/U)";
     std::string colorPBTBU = ConsoleView::getStatusColor(resPBTBU.status);
     std::cout << BOLD << "2. " << labelPBTBU << RESET << std::endl;
     std::cout << "   - Nilai Z-Score : " << resPBTBU.z_score << " SD" << std::endl;
