@@ -56,7 +56,7 @@ std::string ConsoleView::getStatusColor(StatusGizi status) {
 
 void ConsoleView::tampilkanHeader() {
     std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
-    std::cout << BOLD << CYAN << std::string(65, ' ') << "DETEKSI GIZI ANAK BERDASARKAN Z-SCORE" << std::string(66, ' ') << RESET << std::endl;
+    std::cout << BOLD << CYAN << std::string(65, ' ') << "DETEKSI GIZI ANAK BERDASARKAN Z-SCORE" << RESET << std::endl;
     std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
     std::cout << " Alat bantu cepat untuk Kader Posyandu & Bidan Desa dalam menentukan" << std::endl;
     std::cout << " status gizi balita usia 0 hingga 60 bulan secara akurat." << std::endl;
@@ -84,9 +84,9 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
     std::cout << BOLD << CYAN;
     std::cout << LINE_EQ << std::endl;
     if (hanyaRujukan) {
-        std::cout << std::string(65, ' ') << "RIWAYAT BALITA DIRUJUK (KONDISI GAWAT)" << std::string(65, ' ') << std::endl;
+        std::cout << std::string(65, ' ') << "RIWAYAT BALITA DIRUJUK (KONDISI GAWAT)" << std::endl;
     } else {
-        std::cout << std::string(68, ' ') << "RIWAYAT PEMERIKSAAN GIZI BALITA" << std::string(69, ' ') << std::endl;
+        std::cout << std::string(68, ' ') << "RIWAYAT PEMERIKSAAN GIZI BALITA" << std::endl;
     }
     std::cout << LINE_EQ << RESET << std::endl;
     std::cout << BOLD;
