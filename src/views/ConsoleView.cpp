@@ -13,8 +13,8 @@ const std::string BLUE    = "\033[34m";
 const std::string CYAN    = "\033[36m";
 const std::string MAGENTA = "\033[35m";
 
-const std::string ConsoleView::LINE_EQ = std::string(140, '=');
-const std::string ConsoleView::LINE_DASH = std::string(140, '-');
+const std::string ConsoleView::LINE_EQ = std::string(120, '=');
+const std::string ConsoleView::LINE_DASH = std::string(120, '-');
 
 void ConsoleView::clearInput() {
     std::cin.clear();
@@ -56,7 +56,7 @@ std::string ConsoleView::getStatusColor(StatusGizi status) {
 
 void ConsoleView::tampilkanHeader() {
     std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
-    std::cout << BOLD << CYAN << "          DETEKSI GIZI ANAK BERDASARKAN Z-SCORE         " << RESET << std::endl;
+    std::cout << BOLD << CYAN << "                                DETEKSI GIZI ANAK BERDASARKAN Z-SCORE                               " << RESET << std::endl;
     std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
     std::cout << " Alat bantu cepat untuk Kader Posyandu & Bidan Desa dalam menentukan" << std::endl;
     std::cout << " status gizi balita usia 0 hingga 60 bulan secara akurat." << std::endl;
@@ -84,24 +84,20 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
     std::cout << BOLD << CYAN;
     std::cout << LINE_EQ << std::endl;
     if (hanyaRujukan) {
-        std::cout << "                                         RIWAYAT BALITA DIRUJUK (KONDISI GAWAT)                                              " << std::endl;
+        std::cout << "                                     RIWAYAT BALITA DIRUJUK (KONDISI GAWAT)                                     " << std::endl;
     } else {
-        std::cout << "                                              RIWAYAT PEMERIKSAAN GIZI BALITA                                                " << std::endl;
+        std::cout << "                                          RIWAYAT PEMERIKSAAN GIZI BALITA                                       " << std::endl;
     }
     std::cout << LINE_EQ << RESET << std::endl;
     std::cout << BOLD;
     std::cout << "| " << std::left << std::setw(3) << "No"
               << " | " << std::left << std::setw(16) << "Waktu Periksa"
-              << " | " << std::left << std::setw(15) << "Nama Balita"
+              << " | " << std::left << std::setw(25) << "Nama Balita"
               << " | " << std::left << std::setw(3) << "JK"
-              << " | " << std::left << std::setw(4) << "Usia"
-              << " | " << std::left << std::setw(5) << "Berat"
-              << " | " << std::left << std::setw(6) << "Tinggi"
-              << " | " << std::left << std::setw(13) << "Status BB/U"
-              << " | " << std::left << std::setw(13) << "Status PB-TB/U"
-              << " | " << std::left << std::setw(15) << "Status BB/PB-TB"
-              << " | " << std::left << std::setw(7) << "Rujukan"
-              << " | " << RESET << std::endl;
+              << " | " << std::left << std::setw(6) << "Usia"
+              << " | " << std::left << std::setw(8) << "Berat"
+              << " | " << std::left << std::setw(8) << "Tinggi"
+              << " |" << RESET << std::endl;
     std::cout << CYAN << LINE_DASH << RESET << std::endl;
     
     int no = 1;
@@ -112,14 +108,6 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
         std::string bbu = row[7];
         std::string pbu = row[9];
         std::string bbh = row[11];
-        
-        auto cleanStatus = [](const std::string& status) {
-            size_t pos = status.find(" (");
-            if (pos != std::string::npos) {
-                return status.substr(0, pos);
-            }
-            return status;
-        };
         
         std::string rujukan = "TIDAK";
         if (row.size() >= 13) {
@@ -135,18 +123,32 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
         
         std::string colRujukan = (rujukan == "RUJUK") ? (RED + BOLD + "RUJUK" + RESET) : (GREEN + "TIDAK" + RESET);
         
+        // Baris 1: Informasi Dasar
         std::cout << "| " << std::left << std::setw(3) << no++
                   << " | " << std::left << std::setw(16) << row[0]
-                  << " | " << std::left << std::setw(15) << (row[1].length() > 15 ? row[1].substr(0, 12) + "..." : row[1])
+                  << " | " << std::left << std::setw(25) << row[1]
                   << " | " << std::left << std::setw(3) << jk
-                  << " | " << std::left << std::setw(4) << row[3] + " bln"
-                  << " | " << std::left << std::setw(5) << row[4] + " kg"
-                  << " | " << std::left << std::setw(6) << row[5] + " cm"
-                  << " | " << std::left << std::setw(13) << cleanStatus(bbu)
-                  << " | " << std::left << std::setw(13) << cleanStatus(pbu)
-                  << " | " << std::left << std::setw(15) << cleanStatus(bbh)
-                  << " | " << colRujukan << "  "
+                  << " | " << std::left << std::setw(6) << row[3] + " bln"
+                  << " | " << std::left << std::setw(8) << row[4] + " kg"
+                  << " | " << std::left << std::setw(8) << row[5] + " cm"
                   << " |" << std::endl;
+        
+        // Baris 2: BB/U & Rujukan
+        std::cout << "| " << std::left << std::setw(3) << "" 
+                  << " | " << BOLD << "BB/U    : " << RESET << std::left << std::setw(40) << bbu
+                  << " | " << BOLD << "Rujukan: " << RESET << colRujukan << std::endl;
+                  
+        // Baris 3: PB/U
+        std::cout << "| " << std::left << std::setw(3) << "" 
+                  << " | " << BOLD << "PB-TB/U : " << RESET << std::left << std::setw(40) << pbu
+                  << " |" << std::endl;
+                  
+        // Baris 4: BB/PB
+        std::cout << "| " << std::left << std::setw(3) << "" 
+                  << " | " << BOLD << "BB/PB-TB: " << RESET << std::left << std::setw(40) << bbh
+                  << " |" << std::endl;
+        
+        std::cout << CYAN << LINE_DASH << RESET << std::endl;
     }
     
     std::cout << CYAN << LINE_EQ << RESET << std::endl;
