@@ -243,65 +243,7 @@ void KaderController::doPengukuranBaru() {
     }
 
     // Tampilkan Hasil Diagnosis
-    ConsoleView::clearScreen();
-    std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
-    std::cout << BOLD << BLUE << std::string(70, ' ') << "HASIL DIAGNOSIS STATUS GIZI" << RESET << std::endl;
-    std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
-    
-    std::cout << BOLD << "PROFIL BALITA:" << RESET << std::endl;
-    std::cout << "  - Nama Balita    : " << child.nama << std::endl;
-    std::cout << "  - Jenis Kelamin  : " << (child.jenis_kelamin == 'L' ? "Laki-laki" : "Perempuan") << std::endl;
-    std::cout << "  - Umur / Usia    : " << child.umur_bulan << " Bulan" << std::endl;
-    std::cout << "  - Berat Badan    : " << std::fixed << std::setprecision(1) << child.berat_kg << " kg" << std::endl;
-    std::cout << "  - Tinggi Badan   : " << child.tinggi_cm << " cm" 
-              << " (Dibulatkan ke: " << (std::round(child.tinggi_cm * 2.0) / 2.0) << " cm)" << std::endl;
-    std::cout << BLUE << ConsoleView::LINE_DASH << RESET << std::endl << std::endl;
-
-    std::cout << BOLD << "HASIL DIAGNOSIS 3 INDIKATOR UTAMA:" << RESET << std::endl << std::endl;
-
-    // Indikator 1: BB/U
-    std::string colorBBU = ConsoleView::getStatusColor(resBBU.status);
-    std::cout << BOLD << "1. Berat Badan (BB/U)" << RESET << std::endl;
-    std::cout << "   - Nilai Z-Score : " << std::fixed << std::setprecision(2) << resBBU.z_score << " SD" << std::endl;
-    std::cout << "   - Status Gizi   : " << colorBBU << BOLD << "[" << resBBU.nama_status << "]" << RESET << std::endl;
-    std::cout << "   - Penjelasan    : " << resBBU.penjelasan << std::endl;
-    std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiBBU(resBBU.nama_status) << std::endl << std::endl;
-
-    // Indikator 2: TB/U
-    std::string labelPBTBU = "Tinggi Badan (TB/U)";
-    std::string colorPBTBU = ConsoleView::getStatusColor(resPBTBU.status);
-    std::cout << BOLD << "2. " << labelPBTBU << RESET << std::endl;
-    std::cout << "   - Nilai Z-Score : " << resPBTBU.z_score << " SD" << std::endl;
-    std::cout << "   - Status Gizi   : " << colorPBTBU << BOLD << "[" << resPBTBU.nama_status << "]" << RESET << std::endl;
-    std::cout << "   - Penjelasan    : " << resPBTBU.penjelasan << std::endl;
-    std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiTBU(resPBTBU.nama_status) << std::endl << std::endl;
-
-    // Indikator 3: BB/TB
-    std::string labelBBH = "Berat Badan menurut Tinggi Badan (BB/TB)";
-    std::string colorBBH = ConsoleView::getStatusColor(resBBH.status);
-    std::cout << BOLD << "3. " << labelBBH << RESET << std::endl;
-    if (resBBH.status != StatusGizi::TIDAK_TERDEFINISI) {
-        std::cout << "   - Nilai Z-Score : " << resBBH.z_score << " SD" << std::endl;
-    } else {
-        std::cout << "   - Nilai Z-Score : N/A" << std::endl;
-    }
-    std::cout << "   - Status Gizi   : " << colorBBH << BOLD << "[" << resBBH.nama_status << "]" << RESET << std::endl;
-    std::cout << "   - Penjelasan    : " << resBBH.penjelasan << std::endl;
-    std::cout << "   - Rekomendasi   : " << FoodRecommendation::getRekomendasiBBTB(resBBH.nama_status) << std::endl << std::endl;
-
-    std::cout << BLUE << ConsoleView::LINE_EQ << RESET << std::endl;
-
-    if (ZScoreCalculator::isCritical(resBBU.status) || 
-        ZScoreCalculator::isCritical(resPBTBU.status) || 
-        ZScoreCalculator::isCritical(resBBH.status)) {
-        
-        std::string tindakanRujukan = ZScoreCalculator::getReferralAction(resBBU, resPBTBU, resBBH);
-        std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl;
-        std::cout << RED << BOLD << std::string(59, ' ') << "⚠️  REKOMENDASI RUJUKAN & TINDAKAN MEDIS GAWAT  ⚠️" << RESET << std::endl;
-        std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl;
-        std::cout << tindakanRujukan << std::endl;
-        std::cout << RED << ConsoleView::LINE_EQ << RESET << std::endl << std::endl;
-    }
+    ConsoleView::printDetailDiagnosis(child, resBBU, resPBTBU, resBBH);
     
     std::cout << "\nTekan ENTER untuk kembali ke Menu Utama...";
     std::cin.get();
