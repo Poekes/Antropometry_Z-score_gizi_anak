@@ -135,17 +135,17 @@ void ConsoleView::printRiwayatTable(const std::vector<std::vector<std::string>>&
         
         // Baris 2: BB/U & Rujukan
         std::cout << "| " << std::left << std::setw(3) << "" 
-                  << " | " << BOLD << "BB/U    : " << RESET << std::left << std::setw(40) << bbu
-                  << " | " << BOLD << "Rujukan: " << RESET << colRujukan << std::endl;
+                  << " | " << BOLD << "Berat Badan/Umur   : " << RESET << std::left << std::setw(45) << bbu
+                  << " | " << BOLD << "Tindakan Medis: " << RESET << colRujukan << std::endl;
                   
         // Baris 3: PB/U
         std::cout << "| " << std::left << std::setw(3) << "" 
-                  << " | " << BOLD << "PB-TB/U : " << RESET << std::left << std::setw(40) << pbu
+                  << " | " << BOLD << "Tinggi Badan/Umur  : " << RESET << std::left << std::setw(45) << pbu
                   << " |" << std::endl;
                   
         // Baris 4: BB/PB
         std::cout << "| " << std::left << std::setw(3) << "" 
-                  << " | " << BOLD << "BB/PB-TB: " << RESET << std::left << std::setw(40) << bbh
+                  << " | " << BOLD << "Berat/Tinggi Badan : " << RESET << std::left << std::setw(45) << bbh
                   << " |" << std::endl;
         
         std::cout << CYAN << LINE_DASH << RESET << std::endl;
