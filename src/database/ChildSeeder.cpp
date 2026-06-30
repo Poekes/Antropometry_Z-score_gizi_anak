@@ -3,6 +3,29 @@
 #include "../calculator.h"
 #include <fstream>
 
+#include <ctime>
+#include <sstream>
+
+// Helper untuk menghitung umur dalam bulan dari format YYYY-MM-DD
+static int hitungUmurBulan(const std::string& tanggalLahir) {
+    int tahunLahir, bulanLahir, hariLahir;
+    char sep1, sep2;
+    std::stringstream ss(tanggalLahir);
+    ss >> tahunLahir >> sep1 >> bulanLahir >> sep2 >> hariLahir;
+
+    std::time_t t = std::time(nullptr);
+    std::tm* now = std::localtime(&t);
+    int tahunSekarang = now->tm_year + 1900;
+    int bulanSekarang = now->tm_mon + 1;
+    int hariSekarang = now->tm_mday;
+
+    int umurBulan = (tahunSekarang - tahunLahir) * 12 + (bulanSekarang - bulanLahir);
+    if (hariSekarang < hariLahir) {
+        umurBulan--;
+    }
+    return umurBulan > 0 ? umurBulan : 0;
+}
+
 void ChildSeeder::seed(const ReferenceData& refData) {
     std::string filename = "riwayat_pemeriksaan.csv";
     
@@ -24,7 +47,8 @@ void ChildSeeder::seed(const ReferenceData& refData) {
     ChildProfile child1;
     child1.nama = "Budi";
     child1.jenis_kelamin = 'L';
-    child1.umur_bulan = 12;
+    // Gunakan fungsi hitungUmurBulan, misalnya lahir 12 bulan yang lalu (2025-06-30 asumsi sekarang 2026-06-30)
+    child1.umur_bulan = hitungUmurBulan("2025-06-30"); 
     child1.berat_kg = 9.5;
     child1.tinggi_cm = 75.0;
     
@@ -36,7 +60,8 @@ void ChildSeeder::seed(const ReferenceData& refData) {
     ChildProfile child2;
     child2.nama = "Siti";
     child2.jenis_kelamin = 'P';
-    child2.umur_bulan = 24;
+    // Lahir 24 bulan yang lalu (2024-06-30)
+    child2.umur_bulan = hitungUmurBulan("2024-06-30");
     child2.berat_kg = 11.0;
     child2.tinggi_cm = 85.0;
     
@@ -48,7 +73,8 @@ void ChildSeeder::seed(const ReferenceData& refData) {
     ChildProfile child3;
     child3.nama = "Andi";
     child3.jenis_kelamin = 'L';
-    child3.umur_bulan = 8;
+    // Lahir 8 bulan yang lalu (2025-10-30)
+    child3.umur_bulan = hitungUmurBulan("2025-10-30");
     child3.berat_kg = 7.0; // Sedikit kurang
     child3.tinggi_cm = 68.0;
     
