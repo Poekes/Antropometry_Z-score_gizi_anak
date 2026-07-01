@@ -1,3 +1,5 @@
+![Hasil Diagnosis Status Gizi](assets/hasil_diagnosis.png)
+
 # Simulasi Kader Posyandu & Pemantauan Gizi Anak (C++)
 
 Aplikasi berbasis *console* (CLI) interaktif yang dirancang sebagai simulasi sistem informasi Posyandu. Aplikasi ini mempermudah pencatatan data balita oleh Kader dan memberikan akses bagi Ibu Balita untuk memantau status gizi anak secara berkala.
