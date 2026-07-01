@@ -58,12 +58,12 @@ std::string ConsoleView::getStatusColor(StatusGizi status) {
 }
 
 void ConsoleView::tampilkanHeader() {
-    std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
-    std::cout << BOLD << CYAN << std::string(65, ' ') << "DETEKSI GIZI ANAK BERDASARKAN Z-SCORE" << RESET << std::endl;
-    std::cout << MAGENTA << LINE_EQ << RESET << std::endl;
+    std::cout << GREEN << LINE_EQ << RESET << std::endl;
+    std::cout << BOLD << GREEN << std::string(65, ' ') << "DETEKSI GIZI ANAK BERDASARKAN Z-SCORE" << RESET << std::endl;
+    std::cout << GREEN << LINE_EQ << RESET << std::endl;
     std::cout << " Alat bantu cepat untuk Kader Posyandu & Bidan Desa dalam menentukan" << std::endl;
     std::cout << " status gizi balita usia 0 hingga 60 bulan secara akurat." << std::endl;
-    std::cout << MAGENTA << LINE_DASH << RESET << std::endl;
+    std::cout << GREEN << LINE_DASH << RESET << std::endl;
 }
 
 void ConsoleView::printError(const std::string& errorMsg) {
