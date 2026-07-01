@@ -8,7 +8,7 @@ bool AuthController::showLoginScreen(UserSession& session) {
     
     std::cout << BOLD << "--- SILAKAN LOGIN ---" << RESET << std::endl;
     std::cout << " (Ketik 'exit' pada Username untuk keluar aplikasi)" << std::endl;
-    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
+    std::cout << GREEN << ConsoleView::LINE_DASH << RESET << std::endl;
     
     std::string username, password;
     std::cout << "Username: ";
