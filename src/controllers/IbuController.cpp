@@ -53,12 +53,12 @@ void IbuController::showMainMenu() {
         }
     }
     
-    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
+    std::cout << GREEN << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << " [1] Lihat Data & Riwayat Pemeriksaan Anak" << std::endl;
     std::cout << " [2] Pilih Anak Balita" << std::endl;
     std::cout << " [3] Lihat Detail Diagnosis Terakhir" << std::endl;
     std::cout << " [4] Logout" << std::endl;
-    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
+    std::cout << GREEN << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << "Pilih Menu: ";
     
     int menuPilihan = 0;
@@ -102,12 +102,12 @@ void IbuController::doPilihAnak() {
     ConsoleView::tampilkanHeader();
     std::cout << BOLD << "--- PILIH ANAK AKTIF ---" << RESET << std::endl;
     std::cout << " Balita Aktif saat ini: " << (currentSession.childName.empty() ? "[Belum Dipilih]" : currentSession.childName) << std::endl;
-    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
+    std::cout << GREEN << ConsoleView::LINE_DASH << RESET << std::endl;
     for (size_t i = 0; i < anakList.size(); ++i) {
         std::cout << " [" << (i + 1) << "] " << anakList[i] << std::endl;
     }
     std::cout << " [" << (anakList.size() + 1) << "] Kembali ke Menu Utama" << std::endl;
-    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
+    std::cout << GREEN << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << "Pilih (1-" << (anakList.size() + 1) << "): ";
     int sel = 0;
     if (std::cin >> sel) {
