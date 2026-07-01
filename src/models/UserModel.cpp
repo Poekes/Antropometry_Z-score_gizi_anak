@@ -155,3 +155,26 @@ int UserModel::getUserIdByUsername(const std::string& username) {
     inFile.close();
     return -1;
 }
+
+std::vector<std::pair<int, std::string>> UserModel::getAllIbu() {
+    std::vector<std::pair<int, std::string>> ibuList;
+    std::ifstream inFile(FILE_PENGGUNA);
+    if (!inFile.is_open()) return ibuList;
+    
+    std::string line;
+    while (std::getline(inFile, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (line.empty()) continue;
+        std::stringstream ss(line);
+        std::string tId, tRole, tUser;
+        std::getline(ss, tId, ',');
+        std::getline(ss, tRole, ',');
+        std::getline(ss, tUser, ',');
+        
+        if (tRole == "2") {
+            ibuList.push_back({std::stoi(tId), tUser});
+        }
+    }
+    inFile.close();
+    return ibuList;
+}
