@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+#include <limits>
 #include "../models/FoodRecommendation.h"
 
 KaderController::KaderController(UserSession& session, ReferenceData& refData) 
@@ -94,21 +95,54 @@ void KaderController::doTambahAnakKeIbu() {
     ConsoleView::tampilkanHeader();
     std::cout << BOLD << "--- TAMBAH ANAK KE IBU TERDAFTAR ---" << RESET << std::endl << std::endl;
     
-    std::string username, namaAnak;
-    std::cout << "Masukkan Username Ibu: ";
-    std::getline(std::cin >> std::ws, username);
-    
-    if (!UserModel::userExists(username)) {
-        ConsoleView::printError("Username Ibu '" + username + "' tidak ditemukan!");
+    auto ibuList = UserModel::getAllIbu();
+    if (ibuList.empty()) {
+        std::cout << "Belum ada Ibu yang terdaftar.\n";
         std::cout << "\nTekan ENTER untuk kembali...";
         std::cin.get();
         return;
     }
+
+    std::cout << "Daftar Ibu Terdaftar:\n";
+    for (size_t i = 0; i < ibuList.size(); ++i) {
+        std::cout << "[" << i + 1 << "] " << ibuList[i].second << "\n";
+    }
+    std::cout << "[0] Batal\n\n";
+
+    int pilihanIbu;
+    std::cout << "Pilih Ibu (masukkan angka): ";
+    std::cin >> pilihanIbu;
+
+    if (std::cin.fail()) {
+        std::cin.clear(); // Hapus flag error
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Abaikan input yang salah
+        ConsoleView::printError("Input tidak valid!");
+        std::cout << "\nTekan ENTER untuk kembali...";
+        std::cin.get();
+        return;
+    }
+
+    if (pilihanIbu == 0) {
+        return;
+    }
     
+    if (pilihanIbu < 1 || pilihanIbu > (int)ibuList.size()) {
+        ConsoleView::printError("Pilihan tidak valid!");
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "\nTekan ENTER untuk kembali...";
+        std::cin.get();
+        return;
+    }
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Membersihkan sisa input
+    
+    int ibuId = ibuList[pilihanIbu - 1].first;
+    std::string username = ibuList[pilihanIbu - 1].second;
+    
+    std::string namaAnak;
     std::cout << "Masukkan Nama Anak Baru: ";
     std::getline(std::cin, namaAnak);
     
-    int ibuId = UserModel::getUserIdByUsername(username);
     if (UserModel::linkIbuToAnak(ibuId, namaAnak)) {
         ConsoleView::printSuccess("Anak '" + namaAnak + "' berhasil ditambahkan ke Ibu '" + username + "'!");
     } else {
