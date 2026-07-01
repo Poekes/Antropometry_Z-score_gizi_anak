@@ -28,7 +28,7 @@ void KaderController::showMainMenu() {
     std::cout << " [4] Registrasi Ibu Balita Baru" << std::endl;
     std::cout << " [5] Tambah Anak untuk Ibu Terdaftar" << std::endl;
     std::cout << " [6] Logout" << std::endl;
-    std::cout << MAGENTA << ConsoleView::LINE_DASH << RESET << std::endl;
+    std::cout << GREEN << ConsoleView::LINE_DASH << RESET << std::endl;
     std::cout << "Pilih Menu: ";
     
     int menuPilihan = 0;
