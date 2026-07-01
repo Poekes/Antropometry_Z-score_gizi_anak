@@ -10,15 +10,18 @@ Sistem ini mengintegrasikan perhitungan antropometri gizi berdasarkan **[Standar
 
 ## 🚀 Fitur Utama
 
-* **Sistem Akun & Multi-Role**: Mendukung login dengan 2 peran utama:
-  * **Kader Posyandu**: Dapat mendaftarkan Ibu Balita, mencatat data balita, dan melakukan pengukuran (input berat badan, tinggi badan, dll).
-  * **Ibu Balita**: Dapat login untuk memantau rekam jejak pertumbuhan dan hasil klasifikasi gizi (Z-Score) anak-anaknya secara mandiri.
-* **Manajemen Data Relasional**: Setiap data balita terikat langsung dengan akun Ibu yang terdaftar, memastikan integritas data.
-* **Perhitungan Gizi Otomatis (Z-Score)**:
-  1. **BB/U (Berat Badan menurut Umur)**: Mendeteksi indikasi *Underweight* (Gizi Kurang/Buruk).
-  2. **PB/U atau TB/U (Panjang/Tinggi Badan menurut Umur)**: Mendeteksi indikasi *Stunting* (Pendek/Kerdil).
-  3. **BB/PB atau BB/TB (Berat Badan menurut Panjang/Tinggi)**: Mendeteksi status *Wasting* (Kurus) hingga Obesitas.
-* **Validasi Input Aman**: Mencegah input nilai negatif atau tidak logis saat pendataan balita maupun pengukuran.
+Berikut adalah daftar fitur lengkap yang tersedia pada aplikasi ini:
+
+| No | Fitur Utama | Deskripsi Detail | Pengguna (Role) |
+|---|---|---|---|
+| 1 | **Sistem Akun & Multi-Role** | Aplikasi dilengkapi fitur Login dan Registrasi dengan dua jenis hak akses yang berbeda. | Kader Posyandu & Ibu Balita |
+| 2 | **Manajemen Data Ibu Balita** | Mendaftarkan akun untuk Ibu Balita agar dapat memantau gizi anak secara mandiri. | Kader Posyandu |
+| 3 | **Tambah Data Anak** | Menambahkan data balita dan menautkannya ke akun Ibu yang terdaftar. Fitur ini kini dilengkapi dengan pilihan daftar Ibu. | Kader Posyandu |
+| 4 | **Pencatatan Pengukuran (Antropometri)**| Input data berat badan (BB), tinggi/panjang badan (TB/PB), dan umur balita setiap bulan. Terdapat validasi untuk mencegah input tidak wajar (contoh: nilai negatif). | Kader Posyandu |
+| 5 | **Kalkulasi Z-Score Otomatis** | Sistem menghitung status gizi (BB/U, PB/U atau TB/U, dan BB/PB atau BB/TB) berdasarkan data rujukan standar Kemenkes RI/WHO secara instan. | Kader Posyandu & Ibu Balita |
+| 6 | **Rekomendasi Asupan Gizi** | Menampilkan saran makanan dan nutrisi yang direkomendasikan berdasarkan hasil diagnosis Z-Score anak. | Kader Posyandu & Ibu Balita |
+| 7 | **Rekam Jejak (History)** | Menyimpan dan menampilkan riwayat pengukuran sebelumnya secara urut, sehingga grafik pertumbuhan anak dapat dipantau dari waktu ke waktu. | Kader Posyandu & Ibu Balita |
+| 8 | **Manajemen Data Relasional Berbasis File**| Semua data (pengguna, relasi ibu-anak, dan riwayat pengukuran) disimpan secara aman menggunakan sistem penyimpanan CSV. | Sistem |
 
 ---
 
