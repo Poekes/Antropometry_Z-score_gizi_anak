@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 
 struct UserSession {
     bool isLoggedIn;
@@ -31,6 +32,9 @@ public:
 
     // Mendapatkan User ID berdasarkan username
     static int getUserIdByUsername(const std::string& username);
+
+    // Mendapatkan daftar semua Ibu (role == 2) - pair<ID, Username>
+    static std::vector<std::pair<int, std::string>> getAllIbu();
 };
 
 #endif
